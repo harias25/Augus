@@ -49,6 +49,12 @@ class Operacion(Expresion):
         self.linea = linea
         self.columna = columna
 
+    def OperacionNot(self,exp,linea,columna):
+        self.tipo = TIPO_OPERACION.NOT
+        self.operadorIzq = exp
+        self.linea = linea
+        self.columna = columna
+
     def getValorImplicito(self,ent,arbol):
         #PRIMITIVOS
         if(self.tipo == TIPO_OPERACION.PRIMITIVO):
@@ -215,7 +221,7 @@ class Operacion(Expresion):
                 return len(str(valor1)) > len(str(valor2)) 
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion logica '>' ")
+                print("Error en tipos de datos permitidos para una expresion relacional '>' ")
                 return None
         
         #MAYOR IGUAL
@@ -238,7 +244,7 @@ class Operacion(Expresion):
                 return len(str(valor1)) >= len(str(valor2)) 
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion logica '>=' ")
+                print("Error en tipos de datos permitidos para una expresion relacional '>=' ")
                 return None
 
         #MENOR
@@ -261,7 +267,7 @@ class Operacion(Expresion):
                 return len(str(valor1)) < len(str(valor2)) 
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion logica '>' ")
+                print("Error en tipos de datos permitidos para una expresion relacional '>' ")
                 return None
         
         #MENOR IGUAL
@@ -284,7 +290,7 @@ class Operacion(Expresion):
                 return len(str(valor1)) <= len(str(valor2)) 
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion logica '>=' ")
+                print("Error en tipos de datos permitidos para una expresion relacional '>=' ")
                 return None
 
         #IGUAL
@@ -307,7 +313,7 @@ class Operacion(Expresion):
                 return str(valor1) == str(valor2) 
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion logica '>' ")
+                print("Error en tipos de datos permitidos para una expresion relacional '>' ")
                 return None
         
         #DIFERENTE
@@ -330,8 +336,44 @@ class Operacion(Expresion):
                 return str(valor1) != str(valor2)
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion logica '>=' ")
+                print("Error en tipos de datos permitidos para una expresion relacional '>=' ")
                 return None
+
+        #AND
+        elif(self.tipo == TIPO_OPERACION.AND):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            valor2 = self.operadorDer.getValorImplicito(ent,arbol)
+
+            if isinstance(valor1, bool) and isinstance(valor2, bool):
+                return bool(valor1) and bool(valor2)
+            else:
+                #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
+                print("Error en tipos de datos permitidos para una expresion logica AND ")
+                return None
+
+        #OR
+        elif(self.tipo == TIPO_OPERACION.OR):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            valor2 = self.operadorDer.getValorImplicito(ent,arbol)
+
+            if isinstance(valor1, bool) and isinstance(valor2, bool):
+                return bool(valor1) or bool(valor2)
+            else:
+                #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
+                print("Error en tipos de datos permitidos para una expresion logica OR ")
+                return None
+
+        #NOT
+        elif(self.tipo == TIPO_OPERACION.NOT):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+
+            if isinstance(valor1, bool):
+                return not bool(valor1) 
+            else:
+                #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
+                print("Error en tipos de datos permitidos para una expresion logica NOT ")
+                return None
+        
 
     def getTipo(self,ent,arbol):
         value = self.getValorImplicito(ent,arbol)

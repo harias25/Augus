@@ -40,7 +40,11 @@ tokens  = [
     'DECIMAL',
     'ENTERO',
     'CADENA',
-    'ID'
+    'ID',
+    'AND',
+    'OR',
+    'NOT'
+
 ] + list(reservadas.values())
 
 # Tokens
@@ -62,6 +66,9 @@ t_IGUALQUE  = r'=='
 t_NIGUALQUE = r'!='
 t_RESTO     = r'%'
 t_POTENCIA  = r'\^'
+t_AND       = r'&&'
+t_OR        = r'\|\|'
+t_NOT       = r'!'
 
 def t_DECIMAL(t):
     r'\d+\.\d+'
@@ -121,10 +128,12 @@ lexer = lex.lex()
 # Asociación de operadores y precedencia
 precedence = (
     #('left','CONCAT'),
+    ('left','OR','MENOS'),
+    ('left','AND','MENOS'),
     ('nonassoc','MENQUE','MAYQUE','MEIQUE','MAIQUE','IGUALQUE','NIGUALQUE'),
     ('left','MAS','MENOS'),
     ('left','POR','DIVIDIDO','RESTO',"POTENCIA"),
-    ('right','UMENOS'),
+    ('right','UMENOS','NOT'),
     )
 
 #precedence nonassoc menor,mayor, menor_igual,mayor_igual;
@@ -154,7 +163,8 @@ def p_expresion(t):
     '''expresion : primitiva 
                  | expresion_numerica 
                  | expresion_unaria 
-                 | expresion_relacional '''
+                 | expresion_relacional 
+                 | expresion_logica'''
     t[0] = t[1]
 
 def p_expresion_agrupacion(t):
@@ -190,6 +200,23 @@ def p_expresion_unaria(t):
     'expresion_unaria   :   MENOS expresion %prec UMENOS' 
     op = Operacion()
     op.OperacionUnaria(t[2],t.lexer.lineno,0)
+    t[0] = op
+#********************************************** OPERACIONES LOGICAS ***********************************
+def p_expresion_logica(t):
+    '''expresion_logica   : expresion AND expresion 
+                          | expresion OR expresion'''
+                          
+    op = Operacion()
+    if(t.slice[2].type == 'AND'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.AND,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'OR'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.OR,t.lexer.lineno,0)
+    t[0] = op
+
+def p_expresion_negacion(t):
+    'expresion_logica   :   NOT expresion %prec NOT' 
+    op = Operacion()
+    op.OperacionNot(t[2],t.lexer.lineno,0)
     t[0] = op
 #********************************************** OPERACIONES ARITMETICAS ***********************************
 def p_expresion_numerica(t):

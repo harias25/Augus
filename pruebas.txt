@@ -103,3 +103,20 @@ print("AGRUPACION");
 print((2+2)>(1+2));     //True
 
 
+print("*************OPERACIONES LOGICAS*************");
+print("AND");
+print(true&&true);      //True
+print(true&&false);     //False
+print(false&&true);     //False
+print(false&&false);    //False
+
+print("OR");
+print(true||true);      //True
+print(true||false);     //True
+print(false||true);     //True
+print(false||false);    //False
+
+print("NOT");
+print(!true);      //False
+print(!false);     //True
+
