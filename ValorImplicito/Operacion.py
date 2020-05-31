@@ -32,11 +32,11 @@ class Operacion(Expresion):
         self.linea          = 0
         self.columna        = 0
 
-    def Operacion(self,valor):
+    def Primitivo(self,valor):
         self.tipo = TIPO_OPERACION.PRIMITIVO
         self.valor = valor
 
-    def OperacionAritmetica(self,izq,der,operacion,linea,columna):
+    def Operacion(self,izq,der,operacion,linea,columna):
         self.tipo = operacion
         self.operadorIzq = izq
         self.operadorDer = der
@@ -194,7 +194,144 @@ class Operacion(Expresion):
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
                 print("Error en tipo de dato permitido para el operador UNARIO")
                 return None
+        
+        #MAYOR
+        elif(self.tipo == TIPO_OPERACION.MAYOR_QUE):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            valor2 = self.operadorDer.getValorImplicito(ent,arbol)
+            
+            #OPERACION DE ENTEROS
+            if isinstance(valor1, int) and isinstance(valor2, int):
+                return int(valor1) > int(valor2)
+            elif isinstance(valor1, int) and isinstance(valor2, float):     # ENTERO - FLOAT
+                return float(valor1) > float(valor2)
+            elif isinstance(valor1, float) and isinstance(valor2, int):     # FLOAT - ENTERO
+                return float(valor1) > float(valor2)
+            elif isinstance(valor1, float) and isinstance(valor2, float):   # FLOAT - FLOAT
+                return float(valor1) > float(valor2)
+            elif isinstance(valor1, str) or isinstance(valor2, str):        # CONCATENACIÓN STRINGS
+                if valor1 == None : valor1 = ""
+                if valor2 == None : valor2 = ""
+                return len(str(valor1)) > len(str(valor2)) 
+            else:
+                #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
+                print("Error en tipos de datos permitidos para una expresion logica '>' ")
+                return None
+        
+        #MAYOR IGUAL
+        elif(self.tipo == TIPO_OPERACION.MAYOR_IGUA_QUE):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            valor2 = self.operadorDer.getValorImplicito(ent,arbol)
+            
+            #OPERACION DE ENTEROS
+            if isinstance(valor1, int) and isinstance(valor2, int):
+                return int(valor1) >= int(valor2)
+            elif isinstance(valor1, int) and isinstance(valor2, float):     # ENTERO - FLOAT
+                return float(valor1) >= float(valor2)
+            elif isinstance(valor1, float) and isinstance(valor2, int):     # FLOAT - ENTERO
+                return float(valor1) >= float(valor2)
+            elif isinstance(valor1, float) and isinstance(valor2, float):   # FLOAT - FLOAT
+                return float(valor1) >= float(valor2)
+            elif isinstance(valor1, str) or isinstance(valor2, str):        # CONCATENACIÓN STRINGS
+                if valor1 == None : valor1 = ""
+                if valor2 == None : valor2 = ""
+                return len(str(valor1)) >= len(str(valor2)) 
+            else:
+                #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
+                print("Error en tipos de datos permitidos para una expresion logica '>=' ")
+                return None
 
+        #MENOR
+        elif(self.tipo == TIPO_OPERACION.MENOR_QUE):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            valor2 = self.operadorDer.getValorImplicito(ent,arbol)
+            
+            #OPERACION DE ENTEROS
+            if isinstance(valor1, int) and isinstance(valor2, int):
+                return int(valor1) < int(valor2)
+            elif isinstance(valor1, int) and isinstance(valor2, float):     # ENTERO - FLOAT
+                return (float(valor1) < float(valor2))
+            elif isinstance(valor1, float) and isinstance(valor2, int):     # FLOAT - ENTERO
+                return (float(valor1) < float(valor2))
+            elif isinstance(valor1, float) and isinstance(valor2, float):   # FLOAT - FLOAT
+                return (float(valor1) < float(valor2))
+            elif isinstance(valor1, str) or isinstance(valor2, str):        # CONCATENACIÓN STRINGS
+                if valor1 == None : valor1 = ""
+                if valor2 == None : valor2 = ""
+                return len(str(valor1)) < len(str(valor2)) 
+            else:
+                #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
+                print("Error en tipos de datos permitidos para una expresion logica '>' ")
+                return None
+        
+        #MENOR IGUAL
+        elif(self.tipo == TIPO_OPERACION.MENOR_IGUA_QUE):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            valor2 = self.operadorDer.getValorImplicito(ent,arbol)
+            
+            #OPERACION DE ENTEROS
+            if isinstance(valor1, int) and isinstance(valor2, int):
+                return int(valor1) <= int(valor2)
+            elif isinstance(valor1, int) and isinstance(valor2, float):     # ENTERO - FLOAT
+                return (float(valor1) <= float(valor2))
+            elif isinstance(valor1, float) and isinstance(valor2, int):     # FLOAT - ENTERO
+                return (float(valor1) <= float(valor2))
+            elif isinstance(valor1, float) and isinstance(valor2, float):   # FLOAT - FLOAT
+                return (float(valor1) <= float(valor2))
+            elif isinstance(valor1, str) or isinstance(valor2, str):        # CONCATENACIÓN STRINGS
+                if valor1 == None : valor1 = ""
+                if valor2 == None : valor2 = ""
+                return len(str(valor1)) <= len(str(valor2)) 
+            else:
+                #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
+                print("Error en tipos de datos permitidos para una expresion logica '>=' ")
+                return None
+
+        #IGUAL
+        elif(self.tipo == TIPO_OPERACION.IGUAL_IGUAL):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            valor2 = self.operadorDer.getValorImplicito(ent,arbol)
+            
+            #OPERACION DE ENTEROS
+            if isinstance(valor1, int) and isinstance(valor2, int):
+                return int(valor1) == int(valor2)
+            elif isinstance(valor1, int) and isinstance(valor2, float):     # ENTERO - FLOAT
+                return (float(valor1) == float(valor2))
+            elif isinstance(valor1, float) and isinstance(valor2, int):     # FLOAT - ENTERO
+                return (float(valor1) == float(valor2))
+            elif isinstance(valor1, float) and isinstance(valor2, float):   # FLOAT - FLOAT
+                return (float(valor1) == float(valor2))
+            elif isinstance(valor1, str) or isinstance(valor2, str):        # CONCATENACIÓN STRINGS
+                if valor1 == None : valor1 = ""
+                if valor2 == None : valor2 = ""
+                return str(valor1) == str(valor2) 
+            else:
+                #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
+                print("Error en tipos de datos permitidos para una expresion logica '>' ")
+                return None
+        
+        #DIFERENTE
+        elif(self.tipo == TIPO_OPERACION.DIFERENTE_QUE):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            valor2 = self.operadorDer.getValorImplicito(ent,arbol)
+            
+            #OPERACION DE ENTEROS
+            if isinstance(valor1, int) and isinstance(valor2, int):
+                return int(valor1) != int(valor2)
+            elif isinstance(valor1, int) and isinstance(valor2, float):     # ENTERO - FLOAT
+                return (float(valor1) != float(valor2))
+            elif isinstance(valor1, float) and isinstance(valor2, int):     # FLOAT - ENTERO
+                return (float(valor1) != float(valor2))
+            elif isinstance(valor1, float) and isinstance(valor2, float):   # FLOAT - FLOAT
+                return (float(valor1) != float(valor2))
+            elif isinstance(valor1, str) or isinstance(valor2, str):        # CONCATENACIÓN STRINGS
+                if valor1 == None : valor1 = ""
+                if valor2 == None : valor2 = ""
+                return str(valor1) != str(valor2)
+            else:
+                #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
+                print("Error en tipos de datos permitidos para una expresion logica '>=' ")
+                return None
 
     def getTipo(self,ent,arbol):
         value = self.getValorImplicito(ent,arbol)

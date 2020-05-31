@@ -33,6 +33,8 @@ tokens  = [
     'POTENCIA',
     'MENQUE',
     'MAYQUE',
+    'MEIQUE',
+    'MAIQUE',
     'IGUALQUE',
     'NIGUALQUE',
     'DECIMAL',
@@ -54,6 +56,8 @@ t_POR       = r'\*'
 t_DIVIDIDO  = r'/'
 t_MENQUE    = r'<'
 t_MAYQUE    = r'>'
+t_MEIQUE    = r'<='
+t_MAIQUE    = r'>='
 t_IGUALQUE  = r'=='
 t_NIGUALQUE = r'!='
 t_RESTO     = r'%'
@@ -117,11 +121,13 @@ lexer = lex.lex()
 # Asociación de operadores y precedencia
 precedence = (
     #('left','CONCAT'),
+    ('nonassoc','MENQUE','MAYQUE','MEIQUE','MAIQUE','IGUALQUE','NIGUALQUE'),
     ('left','MAS','MENOS'),
     ('left','POR','DIVIDIDO','RESTO',"POTENCIA"),
     ('right','UMENOS'),
     )
 
+#precedence nonassoc menor,mayor, menor_igual,mayor_igual;
 
 def p_init(t) :
     'init            : instrucciones'
@@ -147,7 +153,8 @@ def p_instruccion_imprimir(t) :
 def p_expresion(t):
     '''expresion : primitiva 
                  | expresion_numerica 
-                 | expresion_unaria '''
+                 | expresion_unaria 
+                 | expresion_relacional '''
     t[0] = t[1]
 
 def p_expresion_agrupacion(t):
@@ -155,7 +162,29 @@ def p_expresion_agrupacion(t):
     t[0] = t[2]
 
 #********************************************** OPERACIONES RELACIONALES ***********************************
+def p_expresion_relacional(t):
+    '''expresion_relacional :   expresion MENQUE expresion 
+                            |   expresion MAYQUE expresion 
+                            |   expresion MEIQUE expresion
+                            |   expresion MAIQUE expresion
+                            |   expresion IGUALQUE expresion 
+                            |   expresion NIGUALQUE expresion '''
+    
+    op = Operacion()
+    if(t.slice[2].type == 'MENQUE'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MENOR_QUE,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'MAYQUE'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MAYOR_QUE,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'MEIQUE'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MENOR_IGUA_QUE,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'MAIQUE'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MAYOR_IGUA_QUE,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'IGUALQUE'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.IGUAL_IGUAL,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'NIGUALQUE'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.DIFERENTE_QUE,t.lexer.lineno,0)    
 
+    t[0] = op
 #********************************************** OPERACIONES UNARIAS ***********************************
 def p_expresion_unaria(t):
     'expresion_unaria   :   MENOS expresion %prec UMENOS' 
@@ -173,17 +202,17 @@ def p_expresion_numerica(t):
     
     op = Operacion()
     if(t.slice[2].type == 'MAS'):
-        op.OperacionAritmetica(t[1],t[3],TIPO_OPERACION.SUMA,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.SUMA,t.lexer.lineno,0)
     elif(t.slice[2].type == 'MENOS'):
-        op.OperacionAritmetica(t[1],t[3],TIPO_OPERACION.RESTA,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.RESTA,t.lexer.lineno,0)
     elif(t.slice[2].type == 'POR'):
-        op.OperacionAritmetica(t[1],t[3],TIPO_OPERACION.MULTIPLICACION,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MULTIPLICACION,t.lexer.lineno,0)
     elif(t.slice[2].type == 'DIVIDIDO'):
-        op.OperacionAritmetica(t[1],t[3],TIPO_OPERACION.DIVISION,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.DIVISION,t.lexer.lineno,0)
     elif(t.slice[2].type == 'RESTO'):
-        op.OperacionAritmetica(t[1],t[3],TIPO_OPERACION.MODULO,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MODULO,t.lexer.lineno,0)
     elif(t.slice[2].type == 'POTENCIA'):
-        op.OperacionAritmetica(t[1],t[3],TIPO_OPERACION.POTENCIA,t.lexer.lineno,0)    
+        op.Operacion(t[1],t[3],TIPO_OPERACION.POTENCIA,t.lexer.lineno,0)    
 
     t[0] = op
 #********************************************** EXPRESIONES PRIMITIVAS ***********************************
@@ -195,15 +224,15 @@ def p_expresion_primitiva(t):
                  | FALSE '''
     op = Operacion()
     if(t.slice[1].type == 'CADENA'):
-        op.Operacion(Primitivo(str(t[1]),t.lexer.lineno,0))
+        op.Primitivo(Primitivo(str(t[1]),t.lexer.lineno,0))
     elif(t.slice[1].type == 'DECIMAL'):
-        op.Operacion(Primitivo(float(t[1]),t.lexer.lineno,0))
+        op.Primitivo(Primitivo(float(t[1]),t.lexer.lineno,0))
     elif(t.slice[1].type == 'ENTERO'):
-        op.Operacion(Primitivo(int(t[1]),t.lexer.lineno,0))
+        op.Primitivo(Primitivo(int(t[1]),t.lexer.lineno,0))
     elif(t.slice[1].type == 'TRUE'):
-        op.Operacion(Primitivo(True,t.lexer.lineno,0))
+        op.Primitivo(Primitivo(True,t.lexer.lineno,0))
     elif(t.slice[1].type == 'FALSE'):
-        op.Operacion(Primitivo(False,t.lexer.lineno,0))
+        op.Primitivo(Primitivo(False,t.lexer.lineno,0))
 
     t[0] = op
 

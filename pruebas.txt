@@ -54,3 +54,52 @@ print(-2.5+"=-2.5");
 
 print("AGRUPACION");
 print((2+2)*(1+2)+"=12");
+
+print("*************OPERACIONES RELACIONALES*************");
+print("MAYOR");
+print(1>1);             //False
+print(1>2.5);           //False
+print(2.5>2);           //True
+print(2.1>2.3);         //False
+print("Hola">"Mundo");  //False
+
+print("MAYOR IGUAL");
+print(1>=1);             //True
+print(1>=2.5);           //False
+print(2.5>=2);           //True
+print(2.1>=2.3);         //False
+print("Hola">="Mundo");  //False
+
+print("MENOR");
+print(1<1);             //False
+print(1<2.5);           //True
+print(2.5<2);           //False
+print(2.1<2.3);         //True
+print("Hola"<"Mundo");  //True
+
+print("MENOR QUE");
+print(1<=1);             //True
+print(1<=2.5);           //True
+print(2.5<=2);           //False
+print(2.1<=2.3);         //True
+print("Hola"<="Mundo");  //True
+
+print("IGUAL");
+print(1==1);             //True
+print(1==2.5);           //False
+print(2.5==2);           //False
+print(2.1==2.3);         //False
+print("Hola"=="Mundo");  //False
+
+print("DIFERENTE");
+print(1!=1);             //False
+print(1!=2.5);           //True
+print(2.5!=2);           //True
+print(2.1!=2.3);         //True
+print("Hola"!="Mundo");  //True
+
+
+print("AGRUPACION");
+print((2+2)>(1+2));     //True
+
+
