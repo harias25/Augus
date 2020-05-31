@@ -41,8 +41,13 @@ class Operacion(Expresion):
         self.operadorIzq = izq
         self.operadorDer = der
         self.linea = linea
-        self.columna = columna
+        self.columna = columna 
 
+    def OperacionUnaria(self,exp,linea,columna):
+        self.tipo = TIPO_OPERACION.MENOS_UNARIO
+        self.operadorIzq = exp
+        self.linea = linea
+        self.columna = columna
 
     def getValorImplicito(self,ent,arbol):
         #PRIMITIVOS
@@ -178,6 +183,18 @@ class Operacion(Expresion):
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
                 print("Error en tipos de datos permitidos para una POTENCIA")
                 return None
+        elif(self.tipo == TIPO_OPERACION.MENOS_UNARIO):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            #OPERACION DE ENTEROS
+            if isinstance(valor1, int):
+                return int(valor1) * -1 
+            elif isinstance(valor1, float):     # FLOAT
+                return round(float(float(valor1) * -1),2)
+            else:
+                #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
+                print("Error en tipo de dato permitido para el operador UNARIO")
+                return None
+
 
     def getTipo(self,ent,arbol):
         value = self.getValorImplicito(ent,arbol)

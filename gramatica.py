@@ -119,7 +119,7 @@ precedence = (
     #('left','CONCAT'),
     ('left','MAS','MENOS'),
     ('left','POR','DIVIDIDO','RESTO',"POTENCIA"),
-    #('right','UMENOS'),
+    ('right','UMENOS'),
     )
 
 
@@ -146,9 +146,22 @@ def p_instruccion_imprimir(t) :
 
 def p_expresion(t):
     '''expresion : primitiva 
-                 | expresion_numerica '''
+                 | expresion_numerica 
+                 | expresion_unaria '''
     t[0] = t[1]
 
+def p_expresion_agrupacion(t):
+    'expresion : PARIZQ expresion PARDER'
+    t[0] = t[2]
+
+#********************************************** OPERACIONES RELACIONALES ***********************************
+
+#********************************************** OPERACIONES UNARIAS ***********************************
+def p_expresion_unaria(t):
+    'expresion_unaria   :   MENOS expresion %prec UMENOS' 
+    op = Operacion()
+    op.OperacionUnaria(t[2],t.lexer.lineno,0)
+    t[0] = op
 #********************************************** OPERACIONES ARITMETICAS ***********************************
 def p_expresion_numerica(t):
     '''expresion_numerica   :   expresion MAS expresion 
