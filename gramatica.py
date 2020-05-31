@@ -1,6 +1,7 @@
 # Definición de la gramática
 from ast.Instruccion import Instruccion
 from ValorImplicito.Operacion import Operacion
+from ValorImplicito.Operacion import TIPO_OPERACION
 from ValorImplicito.Primitivo import Primitivo
 from  Primitivas.Imprimir import Imprimir
 
@@ -28,7 +29,8 @@ tokens  = [
     'MENOS',
     'POR',
     'DIVIDIDO',
-    'CONCAT',
+    'RESTO',
+    'POTENCIA',
     'MENQUE',
     'MAYQUE',
     'IGUALQUE',
@@ -50,11 +52,12 @@ t_MAS       = r'\+'
 t_MENOS     = r'-'
 t_POR       = r'\*'
 t_DIVIDIDO  = r'/'
-t_CONCAT    = r'&'
 t_MENQUE    = r'<'
 t_MAYQUE    = r'>'
 t_IGUALQUE  = r'=='
 t_NIGUALQUE = r'!='
+t_RESTO     = r'%'
+t_POTENCIA  = r'\^'
 
 def t_DECIMAL(t):
     r'\d+\.\d+'
@@ -105,12 +108,6 @@ def t_error(t):
     print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
-# Compute column.
- #     input is the input text string
- #     token is a token instance
-def find_column(input, token):
-    line_start = input.rfind('\n', 0, token.lexpos) + 1
-    return (token.lexpos - line_start) + 1
 
 # Construyendo el analizador léxico
 import ply.lex as lex
@@ -119,12 +116,11 @@ lexer = lex.lex()
 
 # Asociación de operadores y precedencia
 precedence = (
-    ('left','CONCAT'),
+    #('left','CONCAT'),
     ('left','MAS','MENOS'),
-    ('left','POR','DIVIDIDO'),
+    ('left','POR','DIVIDIDO','RESTO',"POTENCIA"),
     #('right','UMENOS'),
     )
-
 
 
 def p_init(t) :
@@ -149,18 +145,53 @@ def p_instruccion_imprimir(t) :
     t[0] =Imprimir(t[3])
 
 def p_expresion(t):
-    '''expresion : primitiva '''
+    '''expresion : primitiva 
+                 | expresion_numerica '''
     t[0] = t[1]
 
+#********************************************** OPERACIONES ARITMETICAS ***********************************
+def p_expresion_numerica(t):
+    '''expresion_numerica   :   expresion MAS expresion 
+                            |   expresion MENOS expresion 
+                            |   expresion POR expresion
+                            |   expresion DIVIDIDO expresion
+                            |   expresion RESTO expresion 
+                            |   expresion POTENCIA expresion '''
+    
+    op = Operacion()
+    if(t.slice[2].type == 'MAS'):
+        op.OperacionAritmetica(t[1],t[3],TIPO_OPERACION.SUMA,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'MENOS'):
+        op.OperacionAritmetica(t[1],t[3],TIPO_OPERACION.RESTA,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'POR'):
+        op.OperacionAritmetica(t[1],t[3],TIPO_OPERACION.MULTIPLICACION,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'DIVIDIDO'):
+        op.OperacionAritmetica(t[1],t[3],TIPO_OPERACION.DIVISION,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'RESTO'):
+        op.OperacionAritmetica(t[1],t[3],TIPO_OPERACION.MODULO,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'POTENCIA'):
+        op.OperacionAritmetica(t[1],t[3],TIPO_OPERACION.POTENCIA,t.lexer.lineno,0)    
+
+    t[0] = op
+#********************************************** EXPRESIONES PRIMITIVAS ***********************************
 def p_expresion_primitiva(t):
     '''primitiva : ENTERO
                  | DECIMAL
                  | CADENA
                  | TRUE
-                 | FALSE'''
-
+                 | FALSE '''
     op = Operacion()
-    op.Operacion(Primitivo(t[1],0,0))
+    if(t.slice[1].type == 'CADENA'):
+        op.Operacion(Primitivo(str(t[1]),t.lexer.lineno,0))
+    elif(t.slice[1].type == 'DECIMAL'):
+        op.Operacion(Primitivo(float(t[1]),t.lexer.lineno,0))
+    elif(t.slice[1].type == 'ENTERO'):
+        op.Operacion(Primitivo(int(t[1]),t.lexer.lineno,0))
+    elif(t.slice[1].type == 'TRUE'):
+        op.Operacion(Primitivo(True,t.lexer.lineno,0))
+    elif(t.slice[1].type == 'FALSE'):
+        op.Operacion(Primitivo(False,t.lexer.lineno,0))
+
     t[0] = op
 
 def p_error(t):
