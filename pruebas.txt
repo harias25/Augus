@@ -1,0 +1,5 @@
+print("TEXTO");
+print(1);
+print(2.0);
+print(true);
+print(false);
