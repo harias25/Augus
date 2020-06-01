@@ -7,6 +7,7 @@ from ValorImplicito.Asignacion import Asignacion
 from ValorImplicito.Operacion import TIPO_OPERACION
 from ValorImplicito.Primitivo import Primitivo
 from  Primitivas.Imprimir import Imprimir
+from  Condicionales.If import If
 
 reservadas = {
     'int' : 'INT',
@@ -157,7 +158,8 @@ def p_instrucciones_instruccion(t) :
 def p_instruccion(t) :
     '''instruccion      : imprimir_instr
                         | declaracion 
-                        | asignacion '''
+                        | asignacion 
+                        | if_instruccion '''
     t[0] = t[1]
 
 def p_instruccion_imprimir(t) :
@@ -176,6 +178,33 @@ def p_expresion_agrupacion(t):
     'expresion : PARIZQ expresion PARDER'
     t[0] = t[2]
 
+#********************************************** IF - ELSE IF - ELSE *********************************************
+def p_if(t):
+    'if_instruccion : IF PARIZQ expresion PARDER LLAVIZQ instrucciones LLAVDER'
+    t[0] = If(t[3],t[6],None,None,t.lexer.lineno,0)
+def p_ifelse(t):
+    'if_instruccion : IF PARIZQ expresion PARDER LLAVIZQ instrucciones LLAVDER ELSE LLAVIZQ instrucciones LLAVDER'
+    t[0] = If(t[3],t[6],t[10],None,t.lexer.lineno,0)
+def p_ifelseif(t):
+    'if_instruccion : IF PARIZQ expresion PARDER LLAVIZQ instrucciones LLAVDER lelseif '
+    t[0] = If(t[3],t[6],None,t[8],t.lexer.lineno,0)
+
+def p_ifelseifelse(t):
+    'if_instruccion : IF PARIZQ expresion PARDER LLAVIZQ instrucciones LLAVDER lelseif ELSE LLAVIZQ instrucciones LLAVDER'
+    t[0] = If(t[3],t[6],t[11],t[8],t.lexer.lineno,0)
+
+def p_leseif(t) :
+    'lelseif    : lelseif elseif'
+    t[1].append(t[2])
+    t[0] = t[1]
+
+def p_leseifI(t) :
+    'lelseif    : elseif '
+    t[0] = [t[1]]
+
+def p_elseif(t):
+    'elseif : ELSE IF PARIZQ expresion PARDER LLAVIZQ instrucciones LLAVDER'
+    t[0] = If(t[4],t[7],None,None,t.lexer.lineno,0)
 #********************************************** ASIGNACIONES *********************************************
 def p_asignacion(t):
     'asignacion : ID IGUAL expresion PTCOMA '

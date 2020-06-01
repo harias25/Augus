@@ -27,3 +27,9 @@ print(A);
 print(B);
 print(C);
 PRINT(D);
+
+
+
+if(5>4){
+    print(D);
+}
