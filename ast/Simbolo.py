@@ -1,6 +1,7 @@
 #Clase principal para el manejo de los simbolos que soportará el programa
 
 from enum import Enum
+from ast.Expresion import Expresion
 
 class TIPO_DATO(Enum) :
     ENTERO = 1,
@@ -9,7 +10,7 @@ class TIPO_DATO(Enum) :
     BOOLEAN = 4,
     NULL = 5
 
-class Simbolo() :
+class Simbolo(Expresion) :
     def __init__(self, id, tipo, valor,linea,columna) :
         self.id = id
         self.tipo = tipo
@@ -26,3 +27,9 @@ class Simbolo() :
                 self.valor = False
             else:
                 self.valor = ""
+
+    def getValorImplicito(self,ent,arbol):
+        return self.valor
+
+    def getTipo(self,ent,arbol):
+        return self.tipo

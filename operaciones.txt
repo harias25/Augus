@@ -1,0 +1,123 @@
+print("**********VALORES PRIMITIVOS************");
+print(1);
+print(2.0);
+print(true);
+print(false);
+
+print("*************OPERACIONES ARITMETICAS*************");
+print("SUMA");
+print(1+1+"=2");
+print(1+2.5+"=3.5");
+print(2.5+2+"=4.5");
+print(2.1+2.3+"=4.4");
+print("Hola "+"Mundo");
+
+print("RESTA");
+print(2-1 +"=1");
+print(3-2.5+"=0.5");
+print(2.5-2+"=0.5");
+print(2.3-2.1+"=0.2");
+
+print("MULTIPLICACION");
+print(2*2 +"=4");
+print(2*1.5+"=3.0");
+print(2.5*2+"=5.0");
+print(2.3*2.1+"=4.83");
+
+print("DIVISION");
+print(2/2 +"=1");
+print(3/1.5+"=2.0");
+print(5.0/2+"=2.5");
+print(2.3/2.1+"=1.1");
+print(2/0);
+print(2/0.0);
+
+print("MODULO");
+print(2%2 +"=0");
+print(3%1.5+"=0.0");
+print(5.0%2+"=1.0");
+print(2.3%2.1+"=0.2");
+print(2%0);
+print(2%0.0);
+
+print("POTENCIA");
+print(2^2 +"=4");
+print(3^1.5+"=5.2");
+print(5.1^2+"=26.01");
+print(2.3^2.1+"=5.75");
+print(2^0+"=1");
+print(2^0.0+"=1.0");
+
+print("UNARIO");
+print(-3 +"=-3");
+print(-2.5+"=-2.5");
+
+print("AGRUPACION");
+print((2+2)*(1+2)+"=12");
+
+print("*************OPERACIONES RELACIONALES*************");
+print("MAYOR");
+print(1>1);             //False
+print(1>2.5);           //False
+print(2.5>2);           //True
+print(2.1>2.3);         //False
+print("Hola">"Mundo");  //False
+
+print("MAYOR IGUAL");
+print(1>=1);             //True
+print(1>=2.5);           //False
+print(2.5>=2);           //True
+print(2.1>=2.3);         //False
+print("Hola">="Mundo");  //False
+
+print("MENOR");
+print(1<1);             //False
+print(1<2.5);           //True
+print(2.5<2);           //False
+print(2.1<2.3);         //True
+print("Hola"<"Mundo");  //True
+
+print("MENOR QUE");
+print(1<=1);             //True
+print(1<=2.5);           //True
+print(2.5<=2);           //False
+print(2.1<=2.3);         //True
+print("Hola"<="Mundo");  //True
+
+print("IGUAL");
+print(1==1);             //True
+print(1==2.5);           //False
+print(2.5==2);           //False
+print(2.1==2.3);         //False
+print("Hola"=="Mundo");  //False
+
+print("DIFERENTE");
+print(1!=1);             //False
+print(1!=2.5);           //True
+print(2.5!=2);           //True
+print(2.1!=2.3);         //True
+print("Hola"!="Mundo");  //True
+
+
+print("AGRUPACION");
+print((2+2)>(1+2));     //True
+
+
+print("*************OPERACIONES LOGICAS*************");
+print("AND");
+print(true&&true);      //True
+print(true&&false);     //False
+print(false&&true);     //False
+print(false&&false);    //False
+
+print("OR");
+print(true||true);      //True
+print(true||false);     //True
+print(false||true);     //True
+print(false||false);    //False
+
+print("NOT");
+print(!true);      //False
+print(!false);     //True
+
+print("\'Secuencia \n Escape \\ Pruebas \\r Proyecto \t");

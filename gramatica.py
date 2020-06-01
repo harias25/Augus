@@ -1,5 +1,7 @@
 # Definición de la gramática
 from ast.Instruccion import Instruccion
+from ast.Declaracion import Declaracion
+from ast.Simbolo import TIPO_DATO as Tipo
 from ValorImplicito.Operacion import Operacion
 from ValorImplicito.Operacion import TIPO_OPERACION
 from ValorImplicito.Primitivo import Primitivo
@@ -152,7 +154,8 @@ def p_instrucciones_instruccion(t) :
     t[0] = [t[1]]
 
 def p_instruccion(t) :
-    '''instruccion      : imprimir_instr'''
+    '''instruccion      : imprimir_instr
+                        | declaracion '''
     t[0] = t[1]
 
 def p_instruccion_imprimir(t) :
@@ -164,12 +167,32 @@ def p_expresion(t):
                  | expresion_numerica 
                  | expresion_unaria 
                  | expresion_relacional 
-                 | expresion_logica'''
+                 | expresion_logica '''
     t[0] = t[1]
 
 def p_expresion_agrupacion(t):
     'expresion : PARIZQ expresion PARDER'
     t[0] = t[2]
+
+#********************************************** DECLARACIONES *********************************************
+def p_declaracion(t):
+    'declaracion : tipo_dato ID PTCOMA '
+    t[0] = Declaracion(t[2],t[1],None,t.lexer.lineno,0)
+
+def p_declaracion2(t):
+    'declaracion : tipo_dato ID IGUAL expresion PTCOMA '
+    t[0] = Declaracion(t[2],t[1],t[4],t.lexer.lineno,0)
+
+
+def p_tipo_dato(t):
+    '''tipo_dato : INT 
+            | DOUBLE
+            | STRING
+            | BOOL '''
+    if t[1] == 'int': t[0] = Tipo.ENTERO
+    elif t[1] == 'double': t[0] = Tipo.DOOBLE
+    elif t[1] == 'string': t[0] = Tipo.STRING
+    elif t[1] == 'boolean': t[0] = Tipo.BOOLEAN
 
 #********************************************** OPERACIONES RELACIONALES ***********************************
 def p_expresion_relacional(t):
@@ -248,7 +271,9 @@ def p_expresion_primitiva(t):
                  | DECIMAL
                  | CADENA
                  | TRUE
-                 | FALSE '''
+                 | FALSE 
+                 | ID '''
+
     op = Operacion()
     if(t.slice[1].type == 'CADENA'):
         op.Primitivo(Primitivo(str(t[1]),t.lexer.lineno,0))
@@ -260,6 +285,8 @@ def p_expresion_primitiva(t):
         op.Primitivo(Primitivo(True,t.lexer.lineno,0))
     elif(t.slice[1].type == 'FALSE'):
         op.Primitivo(Primitivo(False,t.lexer.lineno,0))
+    elif(t.slice[1].type == 'ID'):
+        op.Indentficador(t[1],t.lexer.lineno,0)
 
     t[0] = op
 

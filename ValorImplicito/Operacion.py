@@ -21,6 +21,7 @@ class TIPO_OPERACION(Enum) :
     AND= 16
     NOT= 17
     TERNARIO= 18
+    ID = 19
 
 class Operacion(Expresion):
     def __init__(self):
@@ -34,6 +35,10 @@ class Operacion(Expresion):
 
     def Primitivo(self,valor):
         self.tipo = TIPO_OPERACION.PRIMITIVO
+        self.valor = valor
+
+    def Indentficador(self,valor,linea,columna):
+        self.tipo = TIPO_OPERACION.ID 
         self.valor = valor
 
     def Operacion(self,izq,der,operacion,linea,columna):
@@ -59,7 +64,16 @@ class Operacion(Expresion):
         #PRIMITIVOS
         if(self.tipo == TIPO_OPERACION.PRIMITIVO):
             return self.valor.getValorImplicito(ent,arbol)
-        
+
+        #IDENTIFICADORES
+        elif(self.tipo == TIPO_OPERACION.ID):
+            simbolo = ent.obtener(str(self.valor))
+            if(simbolo == None):
+                print("No existe la variable "+str(self.valor))
+                return None
+            
+            return simbolo.getValorImplicito(ent,arbol)
+
         #SUMA
         elif(self.tipo == TIPO_OPERACION.SUMA):
             valor1 = self.operadorIzq.getValorImplicito(ent,arbol)

@@ -8,10 +8,26 @@ class Entorno:
 
     def obtenerLocal(self, id) :
         if not id in self.tabla :
-            print('Error: variable ', id, ' no definida.')
+            #print('Error: variable ', id, ' no definida.')
             return None
 
         return self.tabla[id]
+
+    def existe(self,id):
+        sym = self.obtenerLocal(id)
+        if(sym == None):
+            sig = self.anterior
+            while(sig != None):
+                if not id in sig.tabla :
+                    sym=None
+                    sig = sig.siguiente
+                else:
+                    return True
+
+        if(sym==None):
+            return False
+        else:
+            return True
 
     def obtener(self,id):
         sym = self.obtenerLocal(id)
@@ -26,7 +42,7 @@ class Entorno:
                     break
 
         if(sym==None):
-            print('Error: variable ', id, ' no definida.')
+            #print('Error: variable ', id, ' no definida.')
             return None
         else:
             return sym
