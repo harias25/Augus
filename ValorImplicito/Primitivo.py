@@ -12,12 +12,12 @@ class Primitivo(Expresion):
     
     def getTipo(self,ent,arbol):
 
-        if isinstance(self.valor, int):
-            return Tipo.ENTERO
+        if(self.valor == True or self.valor == False):
+            return Tipo.BOOLEAN
         elif isinstance(self.valor, str):
             return Tipo.STRING
-        elif isinstance(self.valor, bool):
-            return Tipo.BOOLEAN
+        elif isinstance(self.valor, int):
+            return Tipo.ENTERO
         elif isinstance(self.valor, float):
             return Tipo.DOOBLE
         else:

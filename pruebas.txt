@@ -1,5 +1,29 @@
 int a = 3;
-int b;
+double b;
+boolean c;
+STRING d;
+
+print(A);
+print(b);
+print(C);
+print(d);
+
+a = 10;
+b= 5.1;
+C = 5 > 4;
+d = "Hola";
 
 print(a);
-print(b);
+print(B);
+print(c);
+print(D);
+
+a = 4*4;
+b = 1.0*5;
+c = !c;
+d = d + " Mundo";
+
+print(A);
+print(B);
+print(C);
+PRINT(D);

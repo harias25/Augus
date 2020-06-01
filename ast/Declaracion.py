@@ -20,8 +20,8 @@ class Declaracion(Instruccion):
         #validar que no exista una función con el mismo nombre
 
         if self.valor != None:
-            tipoV = self.valor.getTipo(ent,arbol)
             self.valor = self.valor.getValorImplicito(ent,arbol)
+            tipoV = self.getTipo(self.valor)
             if(tipoV != self.tipo):
 
                 print("Se está intentando asignar un valor "+str(tipoV.name)+" a una variable de tipo "+str(self.tipo.name))
@@ -29,3 +29,15 @@ class Declaracion(Instruccion):
 
         simbolo = Simbolo(self.id,self.tipo,self.valor,self.linea,self.columna)
         ent.agregar(simbolo)
+    
+    def getTipo(self,value):
+        if(value == True or value == False):
+            return Tipo.BOOLEAN
+        elif isinstance(value, str):
+            return Tipo.STRING
+        elif isinstance(value, int):
+            return Tipo.ENTERO
+        elif isinstance(value, float):
+            return Tipo.DOOBLE
+        else:
+            return Tipo.NULL

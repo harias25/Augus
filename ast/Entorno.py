@@ -4,9 +4,10 @@ class Entorno:
         self.anterior = anterior
 
     def agregar(self, simbolo) :
-        self.tabla[simbolo.id] = simbolo
+        self.tabla[simbolo.id.lower()] = simbolo
 
     def obtenerLocal(self, id) :
+        id = id.lower()
         if not id in self.tabla :
             #print('Error: variable ', id, ' no definida.')
             return None
@@ -14,6 +15,7 @@ class Entorno:
         return self.tabla[id]
 
     def existe(self,id):
+        id = id.lower()
         sym = self.obtenerLocal(id)
         if(sym == None):
             sig = self.anterior
@@ -30,6 +32,7 @@ class Entorno:
             return True
 
     def obtener(self,id):
+        id = id.lower()
         sym = self.obtenerLocal(id)
         if(sym == None):
             sig = self.anterior
@@ -48,6 +51,7 @@ class Entorno:
             return sym
             
     def eliminar(self,id):
+        id = id.lower()
         sym = self.obtenerLocal(id)
         if(sym == None):
             sig = self.anterior
@@ -61,6 +65,7 @@ class Entorno:
             del self.tabla[id]
 
     def reemplazar(self,simbolo):
+        simbolo.id = simbolo.id.lower()
         sym = self.obtenerLocal(simbolo.id)
         if(sym == None):
             sig = self.anterior

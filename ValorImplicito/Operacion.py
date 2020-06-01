@@ -391,12 +391,12 @@ class Operacion(Expresion):
 
     def getTipo(self,ent,arbol):
         value = self.getValorImplicito(ent,arbol)
-        if isinstance(value, int):
-            return Tipo.ENTERO
+        if(value == True or value == False):
+            return Tipo.BOOLEAN
         elif isinstance(value, str):
             return Tipo.STRING
-        elif isinstance(value, bool):
-            return Tipo.BOOLEAN
+        elif isinstance(value, int):
+            return Tipo.ENTERO
         elif isinstance(value, float):
             return Tipo.DOOBLE
         else:

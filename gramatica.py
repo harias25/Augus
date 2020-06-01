@@ -3,6 +3,7 @@ from ast.Instruccion import Instruccion
 from ast.Declaracion import Declaracion
 from ast.Simbolo import TIPO_DATO as Tipo
 from ValorImplicito.Operacion import Operacion
+from ValorImplicito.Asignacion import Asignacion
 from ValorImplicito.Operacion import TIPO_OPERACION
 from ValorImplicito.Primitivo import Primitivo
 from  Primitivas.Imprimir import Imprimir
@@ -155,7 +156,8 @@ def p_instrucciones_instruccion(t) :
 
 def p_instruccion(t) :
     '''instruccion      : imprimir_instr
-                        | declaracion '''
+                        | declaracion 
+                        | asignacion '''
     t[0] = t[1]
 
 def p_instruccion_imprimir(t) :
@@ -174,6 +176,10 @@ def p_expresion_agrupacion(t):
     'expresion : PARIZQ expresion PARDER'
     t[0] = t[2]
 
+#********************************************** ASIGNACIONES *********************************************
+def p_asignacion(t):
+    'asignacion : ID IGUAL expresion PTCOMA '
+    t[0] = Asignacion(t[1],t[3],t.lexer.lineno,0)
 #********************************************** DECLARACIONES *********************************************
 def p_declaracion(t):
     'declaracion : tipo_dato ID PTCOMA '
@@ -189,10 +195,10 @@ def p_tipo_dato(t):
             | DOUBLE
             | STRING
             | BOOL '''
-    if t[1] == 'int': t[0] = Tipo.ENTERO
-    elif t[1] == 'double': t[0] = Tipo.DOOBLE
-    elif t[1] == 'string': t[0] = Tipo.STRING
-    elif t[1] == 'boolean': t[0] = Tipo.BOOLEAN
+    if t.slice[1].type == 'INT': t[0] = Tipo.ENTERO
+    elif t.slice[1].type == 'DOUBLE': t[0] = Tipo.DOOBLE
+    elif t.slice[1].type == 'STRING': t[0] = Tipo.STRING
+    elif t.slice[1].type == 'BOOL': t[0] = Tipo.BOOLEAN
 
 #********************************************** OPERACIONES RELACIONALES ***********************************
 def p_expresion_relacional(t):
