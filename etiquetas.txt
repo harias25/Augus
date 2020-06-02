@@ -1,0 +1,8 @@
+main:
+    print('esto es el main');
+
+etiqueta1:
+    print('esto es la etiqueta1');
+
+etiqueta2:
+    print('esto es la etiqueta2');

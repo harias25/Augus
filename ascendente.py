@@ -1,6 +1,7 @@
 # Definición de la gramática
 from ast.Instruccion import Instruccion
 from ast.Declaracion import Declaracion
+from ast.Etiqueta import Etiqueta
 from ast.Simbolo import TIPO_DATO as Tipo
 from ValorImplicito.Operacion import Operacion
 from ValorImplicito.Asignacion import Asignacion
@@ -198,8 +199,24 @@ precedence = (
 #precedence nonassoc menor,mayor, menor_igual,mayor_igual;
 
 def p_init(t) :
-    'init            : instrucciones'
+    'init            : etiquetas'
     t[0] = t[1]
+
+#********************************************** ETIQUETAS  **************************************
+def p_etiquetas_lista(t) :
+    'etiquetas    : etiquetas etiqueta'
+    t[1].append(t[2])
+    t[0] = t[1]
+
+def p_etiquetas(t) :
+    'etiquetas    : etiqueta '
+    t[0] = [t[1]]
+
+def p_etiqueta(t) :
+    'etiqueta    : ID DOSP instrucciones '
+    t[0] = Etiqueta(t[1],t[3],t.lexer.lineno,find_column(t.slice[1]))
+
+#********************************************** INSTRUCCIONES  ***********************************
 
 def p_instrucciones_lista(t) :
     'instrucciones    : instrucciones instruccion'
