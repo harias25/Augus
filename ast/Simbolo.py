@@ -11,11 +11,13 @@ class TIPO_DATO(Enum) :
     NULL = 5
 
 class Simbolo(Expresion) :
-    def __init__(self, id, valor,linea,columna) :
+    def __init__(self, id, valor,linea,columna,puntero) :
         self.id = id
         self.valor = valor
         self.linea = linea
         self.columna = columna
+        self.punteros = [ ]
+        self.puntero = puntero
 
     def getValorImplicito(self,ent,arbol):
         return self.valor

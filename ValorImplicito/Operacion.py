@@ -103,7 +103,10 @@ class Operacion(Expresion):
                 print("No existe la variable "+str(self.valor))
                 return None
             
-            return simbolo.getValorImplicito(ent,arbol)
+            valorRetorno = simbolo.getValorImplicito(ent,arbol)
+            if(type(valorRetorno) is Operacion ): 
+                return valorRetorno.getValorImplicito(ent,arbol)
+            return valorRetorno
 
         #SUMA
         elif(self.tipo == TIPO_OPERACION.SUMA):

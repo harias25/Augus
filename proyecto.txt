@@ -1,3 +1,6 @@
+print($ra);
+print($sp);
+
 #Comentario de Una linea
 
 $t1 = 10;
@@ -25,3 +28,35 @@ print(1||0);
 print(1 && 1);
 
 print(0 xor 0);
+
+unset($t1);
+print($t1);
+
+$sp = 1;
+print($sp);
+
+
+$a1 = 8.9;
+print($a1);
+
+$v1 = &$a1;
+print($v1);
+
+$a1 = 'hola';
+
+
+print($v1);
+$v1 = 15;
+print($v1);
+print($a1);
+
+$a1 = 'salida';
+unset($a1);
+print($v1);
+
+$v1 = 25;
+print($v1);
+
+
+exit;
+print('Esto no se debe Imprimir');

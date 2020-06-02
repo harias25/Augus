@@ -7,7 +7,11 @@ from ValorImplicito.Asignacion import Asignacion
 from ValorImplicito.Operacion import TIPO_OPERACION
 from ValorImplicito.Primitivo import Primitivo
 from  Primitivas.Imprimir import Imprimir
+from  Primitivas.Unset import Unset
+from  Primitivas.Exit import Exit
 from  Condicionales.If import If
+import ply.yacc as yacc
+
 
 reservadas = {
     'int'	: 'INT',
@@ -19,8 +23,6 @@ reservadas = {
     'print' : 'IMPRIMIR',
     'unset' : 'UNSET',
     'if'	: 'IF',
-	'$ra'	: 'RA',
-	'$sp'	: 'PUNTERO',
 	'xor'	: 'XOR'
 }
 
@@ -58,6 +60,9 @@ tokens  = [
 	'DECIMAL',
     'ENTERO',
     'CADENA',
+    'PAND',
+    'RA',
+    'PUNTERO'
 ] + list(reservadas.values())
 
 # Tokens
@@ -81,6 +86,8 @@ t_MAIQUE    = r'>='
 t_IGUALQUE  = r'=='
 t_NIGUALQUE = r'!='
 
+t_PAND       = r'&'
+
 t_AND       = r'&&'
 t_OR        = r'\|\|'
 t_NOTR		= r'~'
@@ -89,7 +96,6 @@ t_XORR       = r'\^'
 
 t_SHIFTI    = r'<<'
 t_SHIFTD    = r'>>'
-
 
 def t_DECIMAL(t):
     r'\d+\.\d+'
@@ -134,6 +140,16 @@ def t_PILA(t):
      t.type = reservadas.get(t.value.lower(),'PILA')    # Check for reserved words
      return t
 
+def t_RA(t):
+    r'[$][rR][aA]'
+    t.type = reservadas.get(t.value.lower(),'RA')    # Check for reserved words
+    return t
+
+def t_PUNTERO(t):
+    r'[$][sS][pP]'
+    t.type = reservadas.get(t.value.lower(),'PUNTERO')    # Check for reserved words
+    return t
+
 def t_CADENA(t):
     r'\'.*?\''
     t.value = t.value[1:-1] # remuevo las comillas
@@ -155,6 +171,11 @@ def t_error(t):
     print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
+textoEntrada = ""
+# Funcion para obtener la columna
+def find_column(token):
+    line_start = textoEntrada.rfind('\n', 0, token.lexpos) + 1
+    return (token.lexpos - line_start) + 1
 
 # Construyendo el analizador léxico
 import ply.lex as lex
@@ -189,7 +210,10 @@ def p_instrucciones_instruccion(t) :
 
 def p_instruccion(t) :
     '''instruccion      : imprimir_instr 
-                        | asignacion '''
+                        | asignacion 
+                        | unset 
+                        | exit 
+                        | puntero '''
     t[0] = t[1]
 
 def p_instruccion_imprimir(t) :
@@ -204,19 +228,43 @@ def p_expresion(t):
                  | expresion_logica 
                  | absoluto '''
     t[0] = t[1]
+
+#********************************************** INSTRUCCIONES PRIMITIVAS ***********************************
+def p_exit(t):
+    'exit : EXIT PTCOMA'
+    t[0] = Exit(t.lexer.lineno,find_column(t.slice[1]))
+
+def p_unset(t):
+    '''unset : UNSET PARIZQ TEMP PARDER PTCOMA
+             | UNSET PARIZQ PARAM PARDER PTCOMA
+             | UNSET PARIZQ RET PARDER PTCOMA
+             | UNSET PARIZQ PILA PARDER PTCOMA'''
+    t[0] = Unset(t[3],t.lexer.lineno,find_column(t.slice[1]))
+
 #********************************************** ASIGNACIONES *********************************************
 def p_asignacion(t):
-    '''asignacion : TEMP IGUAL expresion PTCOMA 
-                  | PARAM IGUAL expresion PTCOMA 
-                  | RET IGUAL expresion PTCOMA 
-                  | PILA IGUAL expresion PTCOMA '''
-    t[0] = Asignacion(t[1],t[3],t.lexer.lineno,0)
+    'asignacion : tipo_var IGUAL expresion PTCOMA '
+    t[0] = Asignacion(t[1],t[3],t.lexer.lineno,1,False)
 
+def p_puntero(t):
+    'puntero : tipo_var IGUAL PAND  tipo_var PTCOMA '
+    op = Operacion()
+    op.Indentficador(t[4],t.lexer.lineno,find_column(t.slice[3])+1)
+    t[0] = Asignacion(t[1],op,t.lexer.lineno,1,True)
+
+def p_tipo_var(t):
+    '''tipo_var : TEMP 
+                | PARAM 
+                | RET 
+                | PILA 
+                | RA
+                | PUNTERO '''
+    t[0] = t[1]
 #********************************************** OPERACIONES UNARIAS ***********************************
 def p_expresion_unaria(t):
     'expresion_unaria   :   MENOS primitiva %prec UMENOS' 
     op = Operacion()
-    op.OperacionUnaria(t[2],t.lexer.lineno,0)
+    op.OperacionUnaria(t[2],t.lexer.lineno,find_column(t.slice[1]))
     t[0] = op
 #********************************************** OPERACIONES LOGICAS ***********************************
 def p_expresion_logica(t):
@@ -226,17 +274,17 @@ def p_expresion_logica(t):
                           
     op = Operacion()
     if(t.slice[2].type == 'AND'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.AND,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.AND,t.lexer.lineno,1)
     elif(t.slice[2].type == 'OR'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.OR,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.OR,t.lexer.lineno,1)
     elif(t.slice[2].type == 'XOR'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.XOR,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.XOR,t.lexer.lineno,1)
     t[0] = op
 
 def p_expresion_negacion(t):
     'expresion_logica   :   NOT primitiva %prec NOT' 
     op = Operacion()
-    op.OperacionNot(t[2],t.lexer.lineno,0)
+    op.OperacionNot(t[2],t.lexer.lineno,find_column(t.slice[1]))
     t[0] = op    
 #********************************************** OPERACIONES RELACIONALES ***********************************
 def p_expresion_relacional(t):
@@ -246,20 +294,19 @@ def p_expresion_relacional(t):
                             |   primitiva MAIQUE primitiva
                             |   primitiva IGUALQUE primitiva 
                             |   primitiva NIGUALQUE primitiva '''
-    
     op = Operacion()
     if(t.slice[2].type == 'MENQUE'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.MENOR_QUE,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MENOR_QUE,t.lexer.lineno,1)
     elif(t.slice[2].type == 'MAYQUE'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.MAYOR_QUE,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MAYOR_QUE,t.lexer.lineno,1)
     elif(t.slice[2].type == 'MEIQUE'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.MENOR_IGUA_QUE,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MENOR_IGUA_QUE,t.lexer.lineno,1)
     elif(t.slice[2].type == 'MAIQUE'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.MAYOR_IGUA_QUE,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MAYOR_IGUA_QUE,t.lexer.lineno,1)
     elif(t.slice[2].type == 'IGUALQUE'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.IGUAL_IGUAL,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.IGUAL_IGUAL,t.lexer.lineno,1)
     elif(t.slice[2].type == 'NIGUALQUE'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.DIFERENTE_QUE,t.lexer.lineno,0)    
+        op.Operacion(t[1],t[3],TIPO_OPERACION.DIFERENTE_QUE,t.lexer.lineno,1)    
 
     t[0] = op
 #********************************************** OPERACIONES ARITMETICAS ***********************************
@@ -272,22 +319,22 @@ def p_expresion_numerica(t):
 
     op = Operacion()
     if(t.slice[2].type == 'MAS'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.SUMA,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.SUMA,t.lexer.lineno,1)
     elif(t.slice[2].type == 'MENOS'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.RESTA,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.RESTA,t.lexer.lineno,1)
     elif(t.slice[2].type == 'POR'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.MULTIPLICACION,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MULTIPLICACION,t.lexer.lineno,1)
     elif(t.slice[2].type == 'DIVIDIDO'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.DIVISION,t.lexer.lineno,0)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.DIVISION,t.lexer.lineno,1)
     elif(t.slice[2].type == 'RESTO'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.MODULO,t.lexer.lineno,0)   
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MODULO,t.lexer.lineno,1)
     t[0] = op
-    
+
 #********************************************** EXPRESIONES PRIMITIVAS ***********************************
 def p_absoluto(t):
     'absoluto : ABS PARIZQ primitiva PARDER '
     op = Operacion()
-    op.ValorAbsoluto(t[3],t.lexer.lineno,0)
+    op.ValorAbsoluto(t[3],t.lexer.lineno,find_column(t.slice[1]))
     t[0] = op
 
 def p_expresion_primitiva(t):
@@ -297,25 +344,25 @@ def p_expresion_primitiva(t):
                  | TEMP 
                  | PARAM
                  | RET
-                 | PILA '''
+                 | PILA 
+                 | RA
+                 | PUNTERO '''
     op = Operacion()
     if(t.slice[1].type == 'CADENA'):
-        op.Primitivo(Primitivo(str(t[1]),t.lexer.lineno,0))
+        op.Primitivo(Primitivo(str(t[1]),t.lexer.lineno,find_column(t.slice[1])))
     elif(t.slice[1].type == 'DECIMAL'):
-        op.Primitivo(Primitivo(float(t[1]),t.lexer.lineno,0))
+        op.Primitivo(Primitivo(float(t[1]),t.lexer.lineno,find_column(t.slice[1])))
     elif(t.slice[1].type == 'ENTERO'):
-        op.Primitivo(Primitivo(int(t[1]),t.lexer.lineno,0))
-    elif(t.slice[1].type == 'TEMP') or (t.slice[1].type == 'PARAM') or (t.slice[1].type == 'RET') or (t.slice[1].type == 'PILA'):
-        op.Indentficador(t[1],t.lexer.lineno,0)
+        op.Primitivo(Primitivo(int(t[1]),t.lexer.lineno,find_column(t.slice[1])))
+    elif(t.slice[1].type == 'TEMP') or (t.slice[1].type == 'PARAM') or (t.slice[1].type == 'RET') or (t.slice[1].type == 'PILA') or (t.slice[1].type == 'RA') or (t.slice[1].type == 'PUNTERO'):
+        op.Indentficador(t[1],t.lexer.lineno,find_column(t.slice[1]))
     t[0] = op
 
 def p_error(t):
     print(t)
     print("Error sintáctico en '%s'" % t.value)
 
-import ply.yacc as yacc
 parser = yacc.yacc()
-
 
 def parse(input) :
     return parser.parse(input)
