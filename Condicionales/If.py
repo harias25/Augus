@@ -18,3 +18,7 @@ class If(Instruccion) :
 
         if(bool(resultado)):
             self.instruccionV.ejecutar(ent,arbol)
+            return True
+
+        return False
+        

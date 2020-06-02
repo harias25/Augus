@@ -2,6 +2,7 @@
 from ast.Instruccion import Instruccion
 from ast.Declaracion import Declaracion
 from ast.Etiqueta import Etiqueta
+from ast.GoTo import GoTo
 from ast.Simbolo import TIPO_DATO as Tipo
 from ValorImplicito.Operacion import Operacion
 from ValorImplicito.Asignacion import Asignacion
@@ -232,7 +233,9 @@ def p_instruccion(t) :
                         | asignacion 
                         | unset 
                         | exit 
-                        | puntero '''
+                        | puntero        
+                        | go_to 
+                        | if_instruccion'''
     t[0] = t[1]
 
 def p_instruccion_imprimir(t) :
@@ -246,10 +249,18 @@ def p_expresion(t):
                  | expresion_unaria
                  | expresion_logica 
                  | expresion_bit_bit
-                 | absoluto '''
+                 | absoluto'''
     t[0] = t[1]
 
 #********************************************** INSTRUCCIONES PRIMITIVAS ***********************************
+def p_go_to(t):
+    'go_to : GOTO ID PTCOMA'
+    t[0] = GoTo(t[2],t.lexer.lineno,find_column(t.slice[1]))
+
+def p_if(t):
+    'if_instruccion : IF PARIZQ expresion PARDER go_to '
+    t[0] = If(t[3],t[5],t.lexer.lineno,find_column(t.slice[1]))
+
 def p_exit(t):
     'exit : EXIT PTCOMA'
     t[0] = Exit(t.lexer.lineno,find_column(t.slice[1]))

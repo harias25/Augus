@@ -1,8 +1,10 @@
 import ascendente as g
 import ast.Entorno as TS
 import ast.Instruccion as Instruccion
+import ast.GoTo as GoTo
 import ast.Declaracion as Declaracion
 import Primitivas.Exit as Exit
+import Condicionales.If as If
 import ast.AST as AST
 
 f = open("./etiquetas.txt", "r")
@@ -29,17 +31,22 @@ for ins in instrucciones:
 main = ast.obtenerEtiqueta("main")
 
 if(main != None):
+    salir = False
     for ins in main.instrucciones:
         if(type(ins) is Exit.Exit): 
             break
         resultado = ins.ejecutar(ts_global,ast)
         if(type(resultado) is Exit.Exit): 
+            salir = True
             break
-        
-    siguiente = ast.obtenerSiguienteEtiqueta("main")
-    if(siguiente!=None):
-        siguiente.ejecutar(ts_global,ast)
-        
+        elif((type(ins) is If.If) or (type(ins) is GoTo.GoTo)) and resultado == True:
+            salir = True
+            break
+    
+    if(not salir):   
+        siguiente = ast.obtenerSiguienteEtiqueta("main")
+        if(siguiente!=None):
+            siguiente.ejecutar(ts_global,ast)
 else:
     print("no puede iniciarse el programa ya que no existe la etiqueta main:")
 
