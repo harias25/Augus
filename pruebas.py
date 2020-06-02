@@ -13,8 +13,8 @@ instrucciones = g.parse(input)
 ts_global = TS.Entorno(None)
 ast = AST.AST(instrucciones) 
 
-declaracion1 = Declaracion.Declaracion('$ra',0,0,0,False)
-declaracion2 = Declaracion.Declaracion('$sp',0,0,0,False)
+declaracion1 = Declaracion.Declaracion('$ra',0,0,0,"")
+declaracion2 = Declaracion.Declaracion('$sp',0,0,0,"")
 declaracion1.ejecutar(ts_global,ast)
 declaracion2.ejecutar(ts_global,ast)
 

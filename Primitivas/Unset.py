@@ -12,6 +12,11 @@ class Unset(Instruccion) :
         if(simbolo == None):
             print("El identificador "+str(self.id)+" no existe!!")
         else:
+
+            if(self.id == "$ra" or self.id == "$sp"):
+                print("No es permitido eliminar la variable "+str(self.id)+" ya que es una variable del sistema!!")
+                return None
+
             if(len(simbolo.punteros)>0):
                 for var in simbolo.punteros:
                     simboloP = ent.obtener(str(var))
