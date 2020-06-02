@@ -24,6 +24,12 @@ class TIPO_OPERACION(Enum) :
     ID = 19
     XOR = 20
     ABSOLUTO = 21
+    NOTR = 22
+    PAND = 23
+    BOR = 24
+    XORR = 25
+    SHIFTI = 26
+    SHIFTD = 27
 
 class Operacion(Expresion):
     def __init__(self):
@@ -64,6 +70,12 @@ class Operacion(Expresion):
 
     def OperacionNot(self,exp,linea,columna):
         self.tipo = TIPO_OPERACION.NOT
+        self.operadorIzq = exp
+        self.linea = linea
+        self.columna = columna
+
+    def OperacionNotBit(self,exp,linea,columna):
+        self.tipo = TIPO_OPERACION.NOTR
         self.operadorIzq = exp
         self.linea = linea
         self.columna = columna
@@ -471,7 +483,72 @@ class Operacion(Expresion):
                 print("Error en tipos de datos permitidos para una expresion logica NOT ")
                 return 
                 
-        
+        #PAND
+        elif(self.tipo == TIPO_OPERACION.PAND):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            valor2 = self.operadorDer.getValorImplicito(ent,arbol)
+            if(isinstance(valor1,str)): valor1 = self.obtenerValorNumerico(valor1)
+            if(isinstance(valor2,str)): valor2 = self.obtenerValorNumerico(valor2)
+
+            valor1 = int(valor1)
+            valor2 = int(valor2)
+
+            return valor1 & valor2
+
+        #BOR
+        elif(self.tipo == TIPO_OPERACION.BOR):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            valor2 = self.operadorDer.getValorImplicito(ent,arbol)
+            if(isinstance(valor1,str)): valor1 = self.obtenerValorNumerico(valor1)
+            if(isinstance(valor2,str)): valor2 = self.obtenerValorNumerico(valor2)
+
+            valor1 = int(valor1)
+            valor2 = int(valor2)
+
+            return valor1 | valor2
+
+        #XORR
+        elif(self.tipo == TIPO_OPERACION.XOR):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            valor2 = self.operadorDer.getValorImplicito(ent,arbol)
+            if(isinstance(valor1,str)): valor1 = self.obtenerValorNumerico(valor1)
+            if(isinstance(valor2,str)): valor2 = self.obtenerValorNumerico(valor2)
+
+            valor1 = int(valor1)
+            valor2 = int(valor2)
+
+            return valor1 ^ valor2
+
+        #SHIFI
+        elif(self.tipo == TIPO_OPERACION.SHIFTI):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            valor2 = self.operadorDer.getValorImplicito(ent,arbol)
+            if(isinstance(valor1,str)): valor1 = self.obtenerValorNumerico(valor1)
+            if(isinstance(valor2,str)): valor2 = self.obtenerValorNumerico(valor2)
+
+            valor1 = int(valor1)
+            valor2 = int(valor2)
+
+            return valor1 << valor2
+
+        #SHIFD
+        elif(self.tipo == TIPO_OPERACION.SHIFTD):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            valor2 = self.operadorDer.getValorImplicito(ent,arbol)
+            if(isinstance(valor1,str)): valor1 = self.obtenerValorNumerico(valor1)
+            if(isinstance(valor2,str)): valor2 = self.obtenerValorNumerico(valor2)
+
+            valor1 = int(valor1)
+            valor2 = int(valor2)
+
+            return valor1 >> valor2
+
+        #NOTR
+        elif(self.tipo == TIPO_OPERACION.NOTR):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            if(isinstance(valor1,str)): valor1 = self.obtenerValorNumerico(valor1)
+            valor1 = int(valor1)
+            return ~valor1
         
 
     def getTipo(self,ent,arbol):

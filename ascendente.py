@@ -62,7 +62,8 @@ tokens  = [
     'CADENA',
     'PAND',
     'RA',
-    'PUNTERO'
+    'PUNTERO',
+    'BOR'
 ] + list(reservadas.values())
 
 # Tokens
@@ -87,6 +88,7 @@ t_IGUALQUE  = r'=='
 t_NIGUALQUE = r'!='
 
 t_PAND       = r'&'
+t_BOR       = r'\|'
 
 t_AND       = r'&&'
 t_OR        = r'\|\|'
@@ -190,7 +192,7 @@ precedence = (
     ('nonassoc','MENQUE','MAYQUE','MEIQUE','MAIQUE','IGUALQUE','NIGUALQUE'),
     ('left','MAS','MENOS'),
     ('left','POR','DIVIDIDO','RESTO'),
-    ('right','UMENOS','NOT'),
+    ('right','UMENOS','NOT','NOTR'),
     )
 
 #precedence nonassoc menor,mayor, menor_igual,mayor_igual;
@@ -226,6 +228,7 @@ def p_expresion(t):
                  | expresion_relacional
                  | expresion_unaria
                  | expresion_logica 
+                 | expresion_bit_bit
                  | absoluto '''
     t[0] = t[1]
 
@@ -286,6 +289,34 @@ def p_expresion_negacion(t):
     op = Operacion()
     op.OperacionNot(t[2],t.lexer.lineno,find_column(t.slice[1]))
     t[0] = op    
+
+#********************************************** OPERACIONES BIT A BIT ***********************************
+def p_expresion_bit_bit(t):
+    '''expresion_bit_bit  : primitiva PAND primitiva 
+                          | primitiva BOR primitiva
+                          | primitiva XORR primitiva 
+                          | primitiva SHIFTI primitiva
+                          | primitiva SHIFTD primitiva'''
+                          
+    op = Operacion()
+    if(t.slice[2].type == 'PAND'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.PAND,t.lexer.lineno,1)
+    elif(t.slice[2].type == 'BOR'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.BOR,t.lexer.lineno,1)
+    elif(t.slice[2].type == 'XORR'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.XORR,t.lexer.lineno,1)
+    elif(t.slice[2].type == 'SHIFTI'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.SHIFTI,t.lexer.lineno,1)
+    elif(t.slice[2].type == 'SHIFTD'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.SHIFTD,t.lexer.lineno,1)
+
+    t[0] = op
+
+def p_expresion_negacion_bit(t):
+    'expresion_bit_bit   :   NOTR primitiva %prec NOTR' 
+    op = Operacion()
+    op.OperacionNotBit(t[2],t.lexer.lineno,find_column(t.slice[1]))
+    t[0] = op   
 #********************************************** OPERACIONES RELACIONALES ***********************************
 def p_expresion_relacional(t):
     '''expresion_relacional :   primitiva MENQUE primitiva 
