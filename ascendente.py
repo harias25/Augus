@@ -6,6 +6,7 @@ from ast.GoTo import GoTo
 from ast.Simbolo import TIPO_DATO as Tipo
 from ValorImplicito.Operacion import Operacion
 from ValorImplicito.Asignacion import Asignacion
+from ValorImplicito.Conversion import Conversion
 from ValorImplicito.Operacion import TIPO_OPERACION
 from ValorImplicito.Primitivo import Primitivo
 from  Primitivas.Imprimir import Imprimir
@@ -235,7 +236,8 @@ def p_instruccion(t) :
                         | exit 
                         | puntero        
                         | go_to 
-                        | if_instruccion'''
+                        | if_instruccion
+                        | conversion'''
     t[0] = t[1]
 
 def p_instruccion_imprimir(t) :
@@ -282,6 +284,17 @@ def p_puntero(t):
     op = Operacion()
     op.Indentficador(t[4],t.lexer.lineno,find_column(t.slice[3])+1)
     t[0] = Asignacion(t[1],op,t.lexer.lineno,1,True)
+
+def p_conversiones(t):
+    'conversion : tipo_var IGUAL PARIZQ tipo_dato PARDER primitiva PTCOMA '
+    t[0] = Conversion(t[1],t[6],t[4],t.lexer.lineno,1)
+
+
+def p_tipo_dato(t):
+    '''tipo_dato : INT 
+                | FLOAT 
+                | CHAR '''
+    t[0] = t[1]
 
 def p_tipo_var(t):
     '''tipo_var : TEMP 
