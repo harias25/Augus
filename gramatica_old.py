@@ -20,7 +20,7 @@ reservadas = {
     'unset' : 'UNSET',
     'if'	: 'IF',
 	'$ra'	: 'RA',
-	'$sp'	: 'PILA'
+	#'$sp'	: 'PILA',
 	'xor'	: 'XOR'
 }
 
@@ -47,7 +47,6 @@ tokens  = [
     'OR',
 	'NOTR',
     'NOT',
-    'OR',
 	'XORR',
 	'SHIFTI',
 	'SHIFTD',
@@ -55,6 +54,7 @@ tokens  = [
 	'PARAM',
 	'RET',
 	'PILA',
+    'ID',
 	'DECIMAL',
     'ENTERO',
     'CADENA',
@@ -85,7 +85,7 @@ t_AND       = r'&&'
 t_OR        = r'\|\|'
 t_NOTR		= r'~'
 t_NOT       = r'!'
-t_XORR       = r'^'
+t_XORR       = r'\^'
 
 t_SHIFTI    = r'<<'
 t_SHIFTD    = r'>>'
@@ -99,6 +99,11 @@ def t_DECIMAL(t):
         print("Float value too large %d", t.value)
         t.value = 0
     return t
+
+def t_ID(t):
+     r'[a-zA-Z_][a-zA-Z_0-9]*'
+     t.type = reservadas.get(t.value.lower(),'ID')    # Check for reserved words
+     return t
 
 def t_ENTERO(t):
     r'\d+'
@@ -136,7 +141,7 @@ def t_CADENA(t):
 
 # Comentario simple // ...
 def t_COMENTARIO_SIMPLE(t):
-    r'#.*\n'
+    r'\#.*\n'
     t.lexer.lineno += 1
 
 # Caracteres ignorados
@@ -159,11 +164,11 @@ lexer = lex.lex()
 # Asociación de operadores y precedencia
 precedence = (
     #('left','CONCAT'),
-    ('left','OR','MENOS'),
-    ('left','AND','MENOS'),
+    ('left','OR'),
+    ('left','AND'),
     ('nonassoc','MENQUE','MAYQUE','MEIQUE','MAIQUE','IGUALQUE','NIGUALQUE'),
     ('left','MAS','MENOS'),
-    ('left','POR','DIVIDIDO','RESTO',"POTENCIA"),
+    ('left','POR','DIVIDIDO','RESTO'),
     ('right','UMENOS','NOT'),
     )
 
@@ -192,9 +197,59 @@ def p_instruccion_imprimir(t) :
 
 def p_expresion(t):
     '''expresion : primitiva 
-                 | expresion_numerica '''
+                 | expresion_numerica 
+                 | expresion_relacional
+                 | expresion_unaria
+                 | expresion_logica '''
     t[0] = t[1]
 
+#********************************************** OPERACIONES UNARIAS ***********************************
+def p_expresion_unaria(t):
+    'expresion_unaria   :   MENOS primitiva %prec UMENOS' 
+    op = Operacion()
+    op.OperacionUnaria(t[2],t.lexer.lineno,0)
+    t[0] = op
+#********************************************** OPERACIONES LOGICAS ***********************************
+def p_expresion_logica(t):
+    '''expresion_logica   : primitiva AND primitiva 
+                          | primitiva OR primitiva'''
+                          
+    op = Operacion()
+    if(t.slice[2].type == 'AND'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.AND,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'OR'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.OR,t.lexer.lineno,0)
+    t[0] = op
+
+def p_expresion_negacion(t):
+    'expresion_logica   :   NOT primitiva %prec NOT' 
+    op = Operacion()
+    op.OperacionNot(t[2],t.lexer.lineno,0)
+    t[0] = op    
+#********************************************** OPERACIONES RELACIONALES ***********************************
+def p_expresion_relacional(t):
+    '''expresion_relacional :   primitiva MENQUE primitiva 
+                            |   primitiva MAYQUE primitiva 
+                            |   primitiva MEIQUE primitiva
+                            |   primitiva MAIQUE primitiva
+                            |   primitiva IGUALQUE primitiva 
+                            |   primitiva NIGUALQUE primitiva '''
+    
+    op = Operacion()
+    if(t.slice[2].type == 'MENQUE'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MENOR_QUE,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'MAYQUE'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MAYOR_QUE,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'MEIQUE'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MENOR_IGUA_QUE,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'MAIQUE'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MAYOR_IGUA_QUE,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'IGUALQUE'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.IGUAL_IGUAL,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'NIGUALQUE'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.DIFERENTE_QUE,t.lexer.lineno,0)    
+
+    t[0] = op
 #********************************************** OPERACIONES ARITMETICAS ***********************************
 def p_expresion_numerica(t):
     '''expresion_numerica   :   primitiva MAS primitiva 

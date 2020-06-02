@@ -1,9 +1,9 @@
-import gramatica as g
+import gramatica_old as g
 import ast.Entorno as TS
 import ast.Instruccion as Instruccion
 import ast.AST as AST
 
-f = open("./pruebas.txt", "r")
+f = open("./proyecto.txt", "r")
 input = f.read()
 
 instrucciones = g.parse(input)
