@@ -23,6 +23,7 @@ class TIPO_OPERACION(Enum) :
     TERNARIO= 18
     ID = 19
     XOR = 20
+    ABSOLUTO = 21
 
 class Operacion(Expresion):
     def __init__(self):
@@ -51,6 +52,12 @@ class Operacion(Expresion):
 
     def OperacionUnaria(self,exp,linea,columna):
         self.tipo = TIPO_OPERACION.MENOS_UNARIO
+        self.operadorIzq = exp
+        self.linea = linea
+        self.columna = columna
+
+    def ValorAbsoluto(self,exp,linea,columna):
+        self.tipo = TIPO_OPERACION.ABSOLUTO
         self.operadorIzq = exp
         self.linea = linea
         self.columna = columna
@@ -213,26 +220,11 @@ class Operacion(Expresion):
                 print("Error en tipos de datos permitidos para un MODULO")
                 return None
 
-        #POTENCIA
-        elif(self.tipo == TIPO_OPERACION.POTENCIA):
-            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
-            valor2 = self.operadorDer.getValorImplicito(ent,arbol)
-            
-            #OPERACION DE ENTEROS
-            if isinstance(valor1, int) and isinstance(valor2, int):
-                return int(valor1) ** int(valor2)
-            elif isinstance(valor1, int) and isinstance(valor2, float):     # ENTERO - FLOAT
-                return round(float(float(valor1) ** float(valor2)),2)
-            elif isinstance(valor1, float) and isinstance(valor2, int):     # FLOAT - ENTERO
-                return round(float(float(valor1) ** float(valor2)),2)
-            elif isinstance(valor1, float) and isinstance(valor2, float):   # FLOAT - FLOAT
-                return round(float(float(valor1) ** float(valor2)),2)
-            else:
-                #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una POTENCIA")
-                return None
+        #UNARIA
         elif(self.tipo == TIPO_OPERACION.MENOS_UNARIO):
             valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            if(isinstance(valor1,str)): valor1 = self.obtenerValorNumerico(valor1)
+
             #OPERACION DE ENTEROS
             if isinstance(valor1, int):
                 return int(valor1) * -1 
@@ -241,6 +233,21 @@ class Operacion(Expresion):
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
                 print("Error en tipo de dato permitido para el operador UNARIO")
+                return None
+        
+        #ABSOLUTO
+        elif(self.tipo == TIPO_OPERACION.ABSOLUTO):
+            valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
+            if(isinstance(valor1,str)): valor1 = self.obtenerValorNumerico(valor1)
+
+            #OPERACION DE ENTEROS
+            if isinstance(valor1, int):
+                return abs(int(valor1)) 
+            elif isinstance(valor1, float):     # FLOAT
+                return round(abs(float(float(valor1))),2)
+            else:
+                #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
+                print("Error en tipo de dato permitido para obtener el valor ABSOLUTO")
                 return None
         
         #MAYOR
@@ -260,9 +267,9 @@ class Operacion(Expresion):
             elif isinstance(valor1, str) or isinstance(valor2, str):        # CONCATENACIÓN STRINGS
                 if valor1 == None : valor1 = ""
                 if valor2 == None : valor2 = ""
-                if sinstance(valor1, str) and not isinstance(valor2, str):
+                if isinstance(valor1, str) and not isinstance(valor2, str):
                     return int(len(str(valor1)) > valor2)
-                elif sinstance(valor2, str) and not isinstance(valor1, str):
+                elif isinstance(valor2, str) and not isinstance(valor1, str):
                     return int(valor1 > len(str(valor2)))
                 return int(len(str(valor1)) > len(str(valor2)))
             else:
@@ -287,9 +294,9 @@ class Operacion(Expresion):
             elif isinstance(valor1, str) or isinstance(valor2, str):        # CONCATENACIÓN STRINGS
                 if valor1 == None : valor1 = ""
                 if valor2 == None : valor2 = ""
-                if sinstance(valor1, str) and not isinstance(valor2, str):
+                if isinstance(valor1, str) and not isinstance(valor2, str):
                     return int(len(str(valor1)) >= valor2)
-                elif sinstance(valor2, str) and not isinstance(valor1, str):
+                elif isinstance(valor2, str) and not isinstance(valor1, str):
                     return int(valor1 >= len(str(valor2)))
                 return int(len(str(valor1)) >= len(str(valor2)))
             else:
@@ -314,9 +321,9 @@ class Operacion(Expresion):
             elif isinstance(valor1, str) or isinstance(valor2, str):        # CONCATENACIÓN STRINGS
                 if valor1 == None : valor1 = ""
                 if valor2 == None : valor2 = ""
-                if sinstance(valor1, str) and not isinstance(valor2, str):
+                if isinstance(valor1, str) and not isinstance(valor2, str):
                     return int(len(str(valor1)) < valor2)
-                elif sinstance(valor2, str) and not isinstance(valor1, str):
+                elif isinstance(valor2, str) and not isinstance(valor1, str):
                     return int(valor1 < len(str(valor2)))
                 return int(len(str(valor1)) < len(str(valor2)))
             else:
@@ -341,9 +348,9 @@ class Operacion(Expresion):
             elif isinstance(valor1, str) or isinstance(valor2, str):        # CONCATENACIÓN STRINGS
                 if valor1 == None : valor1 = ""
                 if valor2 == None : valor2 = ""
-                if sinstance(valor1, str) and not isinstance(valor2, str):
+                if isinstance(valor1, str) and not isinstance(valor2, str):
                     return int(len(str(valor1)) <= valor2)
-                elif sinstance(valor2, str) and not isinstance(valor1, str):
+                elif isinstance(valor2, str) and not isinstance(valor1, str):
                     return int(valor1 <= len(str(valor2)) )
                 return int(len(str(valor1)) <= len(str(valor2)) ) 
             else:
@@ -459,7 +466,9 @@ class Operacion(Expresion):
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
                 print("Error en tipos de datos permitidos para una expresion logica NOT ")
-                return None
+                return 
+                
+        
         
 
     def getTipo(self,ent,arbol):

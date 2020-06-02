@@ -11,25 +11,21 @@ class TIPO_DATO(Enum) :
     NULL = 5
 
 class Simbolo(Expresion) :
-    def __init__(self, id, tipo, valor,linea,columna) :
+    def __init__(self, id, valor,linea,columna) :
         self.id = id
-        self.tipo = tipo
         self.valor = valor
         self.linea = linea
         self.columna = columna
-
-        if(valor == None):
-            if(self.tipo == TIPO_DATO.ENTERO):
-                self.valor = 0
-            elif(self.tipo == TIPO_DATO.DOOBLE):
-                self.valor = 0.0
-            elif(self.tipo == TIPO_DATO.BOOLEAN):
-                self.valor = False
-            else:
-                self.valor = ""
 
     def getValorImplicito(self,ent,arbol):
         return self.valor
 
     def getTipo(self,ent,arbol):
-        return self.tipo
+        if isinstance(self.valor, str):
+            return TIPO_DATO.STRING
+        elif isinstance(self.valor, int):
+            return TIPO_DATO.ENTERO
+        elif isinstance(self.valor, float):
+            return TIPO_DATO.DOOBLE
+        else:
+            return TIPO_DATO.NULL

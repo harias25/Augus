@@ -1,4 +1,5 @@
 from ast.Instruccion import Instruccion
+from ast.Declaracion import Declaracion
 from ast.Simbolo import TIPO_DATO as Tipo
 
 class Asignacion(Instruccion):
@@ -10,19 +11,14 @@ class Asignacion(Instruccion):
 
     def ejecutar(self,ent,arbol):
         simbolo = ent.obtener(str(self.id))
+        value = self.valor.getValorImplicito(ent,arbol) 
         if(simbolo == None):
-            print("No existe la variable "+str(self.id))
-            return None
+            declarar = Declaracion(str(self.id),value,self.linea,self.columna)
+            declarar.ejecutar(ent,arbol)
         else:
-            value = self.valor.getValorImplicito(ent,arbol) 
-            tipo = self.getTipo(value)
-
-            if(tipo==simbolo.tipo):
-                simbolo.valor = value
-                ent.reemplazar(simbolo)
-            else:
-                print("Se está intentando asignar un valor "+str(tipo.name)+" a una variable de tipo "+str(simbolo.tipo.name))
-
+            simbolo.valor = value
+            ent.reemplazar(simbolo)
+        
     def getTipo(self,value):
         if(value == True or value == False):
             return Tipo.BOOLEAN

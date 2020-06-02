@@ -1,8 +1,5 @@
 from ast.Instruccion import Instruccion
 import ast.Entorno as TS
-from Transferencia.Break import Break
-from Transferencia.Continue import Continue
-from Transferencia.Return import Return
 
 class If(Instruccion) :
     def __init__(self,  condicion, instruccionesV, instruccionesF, lista_elseif,linea,columna) :
@@ -21,9 +18,4 @@ class If(Instruccion) :
         if(bool(resultado)):
             tablaLocal = TS.Entorno(ent)
             for ins in self.listaInstrucciones:
-                if isinstance(ins,Break) or isinstance(ins,Continue):
-                    return ins
-                elif isinstance(ins,Return):
-                    return ins.ejecutar(tablaLocal,arbol)
-
                 ins.ejecutar(tablaLocal,arbol)

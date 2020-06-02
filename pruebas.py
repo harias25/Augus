@@ -1,4 +1,4 @@
-import gramatica_old as g
+import ascendente as g
 import ast.Entorno as TS
 import ast.Instruccion as Instruccion
 import ast.AST as AST

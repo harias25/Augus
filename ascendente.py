@@ -20,7 +20,7 @@ reservadas = {
     'unset' : 'UNSET',
     'if'	: 'IF',
 	'$ra'	: 'RA',
-	#'$sp'	: 'PILA',
+	'$sp'	: 'PUNTERO',
 	'xor'	: 'XOR'
 }
 
@@ -115,22 +115,22 @@ def t_ENTERO(t):
     return t
 
 def t_TEMP(t):
-     r'[$tT][0-9]+'
+     r'[$][tT][0-9]+'
      t.type = reservadas.get(t.value.lower(),'TEMP')    # Check for reserved words
      return t
 
 def t_PARAM(t):
-     r'[$aA][0-9]+'
+     r'[$][aA][0-9]+'
      t.type = reservadas.get(t.value.lower(),'PARAM')    # Check for reserved words
      return t
 
 def t_RET(t):
-     r'[$vV][0-9]+'
+     r'[$][vV][0-9]+'
      t.type = reservadas.get(t.value.lower(),'RET')    # Check for reserved words
      return t
 
 def t_PILA(t):
-     r'[$sS][0-9]+'
+     r'[$][sS][0-9]+'
      t.type = reservadas.get(t.value.lower(),'PILA')    # Check for reserved words
      return t
 
@@ -188,7 +188,8 @@ def p_instrucciones_instruccion(t) :
     t[0] = [t[1]]
 
 def p_instruccion(t) :
-    '''instruccion      : imprimir_instr '''
+    '''instruccion      : imprimir_instr 
+                        | asignacion '''
     t[0] = t[1]
 
 def p_instruccion_imprimir(t) :
@@ -200,8 +201,16 @@ def p_expresion(t):
                  | expresion_numerica 
                  | expresion_relacional
                  | expresion_unaria
-                 | expresion_logica '''
+                 | expresion_logica 
+                 | absoluto '''
     t[0] = t[1]
+#********************************************** ASIGNACIONES *********************************************
+def p_asignacion(t):
+    '''asignacion : TEMP IGUAL expresion PTCOMA 
+                  | PARAM IGUAL expresion PTCOMA 
+                  | RET IGUAL expresion PTCOMA 
+                  | PILA IGUAL expresion PTCOMA '''
+    t[0] = Asignacion(t[1],t[3],t.lexer.lineno,0)
 
 #********************************************** OPERACIONES UNARIAS ***********************************
 def p_expresion_unaria(t):
@@ -212,13 +221,16 @@ def p_expresion_unaria(t):
 #********************************************** OPERACIONES LOGICAS ***********************************
 def p_expresion_logica(t):
     '''expresion_logica   : primitiva AND primitiva 
-                          | primitiva OR primitiva'''
+                          | primitiva OR primitiva
+                          | primitiva XOR primitiva '''
                           
     op = Operacion()
     if(t.slice[2].type == 'AND'):
         op.Operacion(t[1],t[3],TIPO_OPERACION.AND,t.lexer.lineno,0)
     elif(t.slice[2].type == 'OR'):
         op.Operacion(t[1],t[3],TIPO_OPERACION.OR,t.lexer.lineno,0)
+    elif(t.slice[2].type == 'XOR'):
+        op.Operacion(t[1],t[3],TIPO_OPERACION.XOR,t.lexer.lineno,0)
     t[0] = op
 
 def p_expresion_negacion(t):
@@ -256,7 +268,7 @@ def p_expresion_numerica(t):
                             |   primitiva MENOS primitiva 
                             |   primitiva POR primitiva
                             |   primitiva DIVIDIDO primitiva
-                            |   primitiva RESTO primitiva '''
+                            |   primitiva RESTO primitiva'''
 
     op = Operacion()
     if(t.slice[2].type == 'MAS'):
@@ -270,12 +282,22 @@ def p_expresion_numerica(t):
     elif(t.slice[2].type == 'RESTO'):
         op.Operacion(t[1],t[3],TIPO_OPERACION.MODULO,t.lexer.lineno,0)   
     t[0] = op
+    
 #********************************************** EXPRESIONES PRIMITIVAS ***********************************
+def p_absoluto(t):
+    'absoluto : ABS PARIZQ primitiva PARDER '
+    op = Operacion()
+    op.ValorAbsoluto(t[3],t.lexer.lineno,0)
+    t[0] = op
+
 def p_expresion_primitiva(t):
     '''primitiva : ENTERO
                  | DECIMAL
                  | CADENA
-                 | TEMP '''
+                 | TEMP 
+                 | PARAM
+                 | RET
+                 | PILA '''
     op = Operacion()
     if(t.slice[1].type == 'CADENA'):
         op.Primitivo(Primitivo(str(t[1]),t.lexer.lineno,0))
@@ -283,7 +305,7 @@ def p_expresion_primitiva(t):
         op.Primitivo(Primitivo(float(t[1]),t.lexer.lineno,0))
     elif(t.slice[1].type == 'ENTERO'):
         op.Primitivo(Primitivo(int(t[1]),t.lexer.lineno,0))
-    elif(t.slice[1].type == 'TEMP'):
+    elif(t.slice[1].type == 'TEMP') or (t.slice[1].type == 'PARAM') or (t.slice[1].type == 'RET') or (t.slice[1].type == 'PILA'):
         op.Indentficador(t[1],t.lexer.lineno,0)
     t[0] = op
 

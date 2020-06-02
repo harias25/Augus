@@ -1,1 +1,27 @@
+#Comentario de Una linea
+
+$t1 = 10;
+print($t1);
+
+$t1 = 'Hola Mundo';
+print($t1);
+
+$a1 = 8.9;
+print($a1);
+
+$v1 = -$a1;
+print($v1);
+
+$s1 = 25;
+print($s1);
+
+$t3 = abs($v1);
+print($t3);
+
 print(!0);
+
+print(1||0);
+
+print(1 && 1);
+
+print(0 xor 0);
