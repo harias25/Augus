@@ -1,0 +1,254 @@
+DUDAS
+	comparación de una cadena con un tipo númerico  (actualmente le saco el tamaño)
+
+	
+PENDIENTES
+	estructura de errores
+	input();
+	reporte errores
+	tabla de simbolos
+	reporte gramatical
+
+	FrontEnd
+
+
+
+BIT A BIT
+	PHP https://www.php.net/manual/es/language.operators.bitwise.php
+	PYTHON https://wiki.python.org/moin/BitwiseOperators
+
+
+main:
+    $a0 = 5;
+    goto f1;
+ret0:
+    print($v0);
+    exit;
+f1:
+    $a1 = $a0;
+    goto f2;
+ret1:
+    $v0 = $v1;
+    goto ret0;
+f2:
+    $v1 = $a1*$a1;
+    goto ret1;
+
+
+
+#while 
+main:
+    $t1 = 0;
+    $t2 = 0;
+while:
+    if ($t1>=4) goto end;
+    $t2 = $t2 + $t1;
+    $t1 = $t1 + 1;
+    goto while;
+end:
+    print($t2);
+
+
+
+#factorial 
+main:
+    $a0 = 4;
+    $ra = 0; #level 0
+    goto fact;
+ret0:
+    print($v0);
+    exit;
+fact:
+    if ($a0>1) goto sino;
+    $v0 = 1;
+    if ($ra==0) goto ret0;
+    $ra = $ra - 1;
+    goto ret1;
+sino:
+    $a0 = $a0 - 1;
+    $ra = $ra + 1; #level ++
+    goto fact;
+ret1:
+    $a0 = $a0 + 1;
+    $v0 = $a0 * $v0;
+    if ($ra==0) goto ret0;
+    $ra = $ra - 1;
+    goto ret1;
+
+
+#ackerman 
+main:
+    $a0 = 2;
+    $a1 = 4;
+    $ra = 0; #level 0
+    goto ack;
+
+ret0:
+    if($ra>0) goto salida4;
+
+    print($v0);
+    exit;
+
+ack:
+    if($a0==0) goto salida1; #caso 1
+    if($a1==0) goto salida2; #caso 2
+    goto salida3;
+
+salida1:
+    $v0 = $a1 + 1;  # return n+1
+    goto ret0;
+
+salida2:
+    $a0 = $a0-1; #m-1
+    $a1 = 1;     #n = 1
+    goto ack;
+    
+salida3:
+    $a1 = $a1 - 1;   #n-1
+    $s0 = $a0;      #guardamos m
+    $ra = $ra + 1;
+    goto ack;
+
+salida4:
+    $ra = $ra -1;
+    $a1 = $v0;
+    $a0 = $s0 - 1;
+    goto ack;
+    
+  
+
+
+
+#factorial 
+main:
+    |
+    print('**************CONVERSIONES A INT *********************');
+    $t0 = 4.5;
+    $t1 = (int)$t0;
+    $t3 = 'mundo';
+    $t2 = (int)$t3;
+    $t4 = (int)'h';
+    print($t1);
+    print($t2);
+    print($t4);
+
+    print('**************CONVERSIONES A FLOAT *********************');
+    $t0 = 4;
+    $t1 = (float)$t0;
+    $t3 = 'mundo';
+    $t2 = (float)$t3;
+    $t4 = (float)'h';
+    print($t1);
+    print($t2);
+    print($t4);
+
+    print('**************CONVERSIONES A CHAR *********************');
+    $t0 = 320;
+    $t1 = (char)$t0;
+    $t3 = 'mundo';
+    $t2 = (char)$t3;
+    $t4 = (char)104.0;
+    print($t1);
+    print($t2);
+    print($t4);
+
+
+
+main:
+$t1=array();
+$t1[1]=array();
+$t1[1][1] = array();
+$t1[1][1][0] = 'Hola';
+print($t1[1][1][0][0]);
+#print("\n");
+
+$t2=array();
+$t2[1.1]= 1;
+print($t2[1.1]);
+
+#print("\n");
+print($t2[1.2]);
+
+
+
+
+
+
+
+	$t0 = 'Hola';
+    print($t0[0][0][0][0]);
+
+    $t0[3] = 'i';
+    print($t0); #Holi
+
+    $t0[5] = 'Mundo';
+    #print("\n");
+    print($t0); #Holi M
+
+    $t1 = array();
+    print($t1);
+
+    $t5 = array();
+    $t5[4] = 1;
+    
+    print($t5[5]);
+    print($t5[4]);
+
+    $t5[0]['Perro'][0] = 'Hola';
+    print($t5[0]['Perro'][0]);
+    print($t5[0]['Perro'][0][3]); #Hola
+
+    $t5[0]['Perro'][0][3] = 'i'; #Holi
+    print($t5[0]['Perro'][0][3]); 
+
+
+
+$t1=array();
+$t1[4] = 1;
+print($t1[4]);
+
+$t1['nombre'] = 'carlos';
+print($t1['nombre']);
+
+$t2 = $t1[4];
+print($t2);
+$t2 = $t1['nombre'];
+print($t2);
+
+
+
+
+#array pruebas 1 
+main:
+    $t1 = array();
+    $t1[0] = 0;
+    $t1[1] = 1;
+    print($t1);
+
+    print($t1[0]);
+    print($t1[1]);
+
+    $t1[1][0] = 10;
+
+    $t1[2][0] = 20;
+    print($t1[2][0]);
+
+    print($t1[1][3]);
+
+    $t1['nombre'] = 'Carla';
+    print($t1['nombre']);
+
+    $t1['nombre'][4] = 'o';
+    print($t1['nombre']);
+
+    $t1['nombre'][5] = 's';
+    print($t1['nombre']);
+
+    $t1['nombre'][7] = 's';
+    print($t1['nombre']);
+
+    $t1['nombre']['apellido'] = 'last';
+    print($t1['nombre']);
+
+
+ 
