@@ -15,7 +15,8 @@ from  Primitivas.Unset import Unset
 from  Primitivas.Exit import Exit
 from  Condicionales.If import If
 import ply.yacc as yacc
-
+import Reporteria.Error as Error
+import Reporteria.ReporteErrores as ReporteErrores
 
 reservadas = {
     'int'	: 'INT',
@@ -175,7 +176,9 @@ def t_newline(t):
     t.lexer.lineno += t.value.count("\n")
     
 def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
+    error = Error.Error("LEXICO","Error lexico, Caracter "+t.value[0]+" no es valido.",t.lexer.lineno,find_column(t))
+    ReporteErrores.func(error)
+    #print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
 textoEntrada = ""
@@ -488,8 +491,8 @@ def  p_acceso(t):
     t[0] = t[2]
 
 def p_error(t):
-    print(t)
-    print("Error sintáctico en '%s'" % t.value)
+    error = Error.Error("SINTACTICO","Error sintactico, no se esperaba el valor "+t.value,t.lexer.lineno,find_column(t))
+    ReporteErrores.func(error)
 
 parser = yacc.yacc()
 

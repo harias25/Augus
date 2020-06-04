@@ -1,3 +1,6 @@
+?
+$t8 = 5;
+
 #agenda
 main:
     $t1 = array();
