@@ -24,4 +24,7 @@ while0:
     goto while0;
 
 end0:
+    goto etiquetax;
+
+end0:
     exit;
