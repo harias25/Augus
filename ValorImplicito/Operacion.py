@@ -30,6 +30,7 @@ class TIPO_OPERACION(Enum) :
     XORR = 25
     SHIFTI = 26
     SHIFTD = 27
+    ACCESO = 28
 
 class Operacion(Expresion):
     def __init__(self):
@@ -64,6 +65,12 @@ class Operacion(Expresion):
 
     def ValorAbsoluto(self,exp,linea,columna):
         self.tipo = TIPO_OPERACION.ABSOLUTO
+        self.operadorIzq = exp
+        self.linea = linea
+        self.columna = columna
+
+    def AccesoLista(self,exp,linea,columna):
+        self.tipo = TIPO_OPERACION.ACCESO
         self.operadorIzq = exp
         self.linea = linea
         self.columna = columna
@@ -108,6 +115,9 @@ class Operacion(Expresion):
         if(self.tipo == TIPO_OPERACION.PRIMITIVO):
             return self.valor.getValorImplicito(ent,arbol)
 
+        #ACCESOS LISTAS
+        elif(self.tipo == TIPO_OPERACION.ACCESO):
+            return self.operadorIzq.getValorImplicito(ent,arbol)
         #IDENTIFICADORES
         elif(self.tipo == TIPO_OPERACION.ID):
             simbolo = ent.obtener(str(self.valor))

@@ -13,7 +13,10 @@ class Asignacion(Instruccion):
     def ejecutar(self,ent,arbol):
 
         simbolo = ent.obtener(str(self.id))
-        value = self.valor.getValorImplicito(ent,arbol) 
+        value = {}
+        if(not isinstance(self.valor,dict)):
+            value = self.valor.getValorImplicito(ent,arbol) 
+
         if(self.puntero==False):
             if(simbolo == None):
                 declarar = Declaracion(str(self.id),value,self.linea,self.columna,"")

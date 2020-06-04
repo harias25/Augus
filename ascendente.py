@@ -27,7 +27,8 @@ reservadas = {
     'print' : 'IMPRIMIR',
     'unset' : 'UNSET',
     'if'	: 'IF',
-	'xor'	: 'XOR'
+	'xor'	: 'XOR',
+    'array' : 'ARRAY'
 }
 
 tokens  = [
@@ -288,6 +289,10 @@ def p_asignacion(t):
     'asignacion : tipo_var IGUAL expresion PTCOMA '
     t[0] = Asignacion(t[1],t[3],t.lexer.lineno,1,False)
 
+def p_asingacion_array(t):
+    'asignacion : tipo_var IGUAL ARRAY PARIZQ PARDER PTCOMA '
+    t[0] = Asignacion(t[1],{},t.lexer.lineno,1,False)
+
 def p_puntero(t):
     'puntero : tipo_var IGUAL PAND  tipo_var PTCOMA '
     op = Operacion()
@@ -439,16 +444,22 @@ def p_expresion_primitiva(t):
         op.Primitivo(Primitivo(int(t[1]),t.lexer.lineno,find_column(t.slice[1])))
     elif(t.slice[1].type == 'TEMP') or (t.slice[1].type == 'PARAM') or (t.slice[1].type == 'RET') or (t.slice[1].type == 'PILA') or (t.slice[1].type == 'RA') or (t.slice[1].type == 'PUNTERO'):
         op.Indentficador(t[1],t.lexer.lineno,find_column(t.slice[1]))
+    elif(t.slice[1].type == 'acceso_lista'):
+        op.AccesoLista(t[1],t.lexer.lineno,1)
     t[0] = op
 
 #********************************************** LISTAS *******************************************
 def  p_acceso_lista(t):
     'acceso_lista : tipo_var accesos'
-    t[0] = AccesoLista(t[1],t[2],None,t.lexer.lineno,1)
+    t[0] = AccesoLista(t[1],t[2],None,t.lexer.lineno,1,False)
 
 def  p_acceso_lista_asigna(t):
     'acceso_lista_asigna : tipo_var accesos IGUAL expresion PTCOMA'
-    t[0] = AccesoLista(t[1],t[2],t[4],t.lexer.lineno,1)
+    t[0] = AccesoLista(t[1],t[2],t[4],t.lexer.lineno,1,False)
+
+def  p_acceso_lista_asigna_array(t):
+    'acceso_lista_asigna : tipo_var accesos IGUAL ARRAY PARIZQ PARDER PTCOMA'
+    t[0] = AccesoLista(t[1],t[2],t[4],t.lexer.lineno,1,True)
 
 def  p_accesos(t):
     'accesos :  accesos acceso'

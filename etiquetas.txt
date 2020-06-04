@@ -1,13 +1,15 @@
 #factorial 
 main:
-    $t0 = 'Hola';
-    print($t0[0][0][0][0]);
+$t1=array();
+$t1[4] = 1;
+print($t1[4]);
 
-    $t0[3] = 'i';
-    print($t0); #Holi
+$t1['nombre'] = 'carlos';
+print($t1['nombre']);
 
-    $t0[5] = 'Mundo';
-    #print("\n");
-    print($t0); #Holi M
+$t2 = $t1[4];
+print($t2);
+$t2 = $t1['nombre'];
+print($t2);
 
 

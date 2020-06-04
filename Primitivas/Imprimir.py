@@ -5,4 +5,10 @@ class Imprimir(Instruccion) :
         self.cad = cad
 
     def ejecutar(self,ent,arbol):
-        print('> ', self.cad.getValorImplicito(ent,arbol))
+        valor = self.cad.getValorImplicito(ent,arbol)
+        if(isinstance(valor,dict)):
+            print("Error, no es posible imprimir un Array!!")
+        elif(valor == None):
+            return None
+        else:
+            print('> ', valor)
