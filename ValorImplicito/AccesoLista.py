@@ -83,6 +83,11 @@ class AccesoLista(Expresion,Instruccion):
 
     def asignarValorEnArray(self,ent,diccionario,valorAgregar,pos):
         temporal = diccionario
+        if(isinstance(temporal,int) or isinstance(temporal,float)):
+            print("Error semantico, Ya se encuentra ocupado el indice.")
+            print("Linea: "+self.linea)
+            print("Columna: "+self.columna)
+            return None
 
         if(len(self.llaves)<pos): return None
 
@@ -133,8 +138,8 @@ class AccesoLista(Expresion,Instruccion):
                 return None
 
         resultado = self.asignarValorEnArray(ent,temporal[valor],valorAgregar,pos+1)
-        if(resultado == None): return diccionario
-
+        if(resultado == None and isinstance(temporal[valor],dict)): return diccionario
+        if(resultado == None and not isinstance(temporal[valor],dict)): return None
         diccionario[valor] = resultado
         return diccionario
 
