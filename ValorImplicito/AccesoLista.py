@@ -27,6 +27,11 @@ class AccesoLista(Expresion,Instruccion):
             if(isinstance(valor,float)): valor = int(valor)
 
             if(isinstance(valorIdentificador,str)):  #cadenas
+
+                if len(self.llaves) > 1:
+                    print("No puede usarse acceso [..][..]... para asignación de Cadenas")
+                    return None
+
                 if(isinstance(valorAgregar,float)): valorAgregar = int(valorAgregar)
                 if(isinstance(valorAgregar,dict)):
                     print("Valor no valido para asignar caracteres de una cadena")
