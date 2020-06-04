@@ -1,6 +1,9 @@
 from ast.Instruccion import Instruccion
 from ValorImplicito.Asignacion import Asignacion
 from ValorImplicito.Primitivo import Primitivo
+from Reporteria.Error import Error 
+import Reporteria.ReporteErrores as ReporteErrores
+
 class Unset(Instruccion) :
     def __init__(self,id,linea,columna) :
         self.id = id
@@ -10,11 +13,13 @@ class Unset(Instruccion) :
     def ejecutar(self,ent,arbol):
         simbolo = ent.obtener(str(self.id)) 
         if(simbolo == None):
-            print("El identificador "+str(self.id)+" no existe!!")
+            error = Error("SEMANTICO","Error semantico, El identificador "+str(self.id)+" no existe!!",self.linea,self.columna)
+            ReporteErrores.func(error)
         else:
 
             if(self.id == "$ra" or self.id == "$sp"):
-                print("No es permitido eliminar la variable "+str(self.id)+" ya que es una variable del sistema!!")
+                error = Error("SEMANTICO","Error semantico, No es permitido eliminar la variable "+str(self.id)+" ya que es una variable del sistema!!",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
 
             if(len(simbolo.punteros)>0):

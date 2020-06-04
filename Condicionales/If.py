@@ -1,5 +1,7 @@
 from ast.Instruccion import Instruccion
 import ast.Entorno as TS
+from Reporteria.Error import Error 
+import Reporteria.ReporteErrores as ReporteErrores
 
 class If(Instruccion) :
     def __init__(self,  condicion, instruccionV,linea,columna) :
@@ -14,7 +16,8 @@ class If(Instruccion) :
         if(resultado == 1 or resultado == 1.0): resultado = True
 
         if(not isinstance(resultado,bool)):
-            print("Se esperaba un valor 1 o 0 para validar el IF.")
+            error = Error("SEMANTICO","Error semantico, Se esperaba un valor 1 o 0 para validar el IF.",self.linea,self.columna)
+            ReporteErrores.func(error)
 
         if(bool(resultado)):
             try:

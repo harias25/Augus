@@ -2,6 +2,8 @@ from ValorImplicito.Asignacion import Asignacion
 from ValorImplicito.Primitivo import Primitivo
 from ast.Instruccion import Instruccion
 from ast.Expresion import Expresion
+from Reporteria.Error import Error 
+import Reporteria.ReporteErrores as ReporteErrores
 
 class AccesoLista(Expresion,Instruccion):
     def __init__(self,id,llaves,valor,linea,columna,DefArray):
@@ -15,9 +17,8 @@ class AccesoLista(Expresion,Instruccion):
     def ejecutar(self,ent,arbol):
         simbolo = ent.obtener(str(self.id))
         if(simbolo == None):
-            print("No existe la variable con identificador "+self.id)
-            print("Linea: "+self.linea)
-            print("Columna: "+self.columna)
+            error = Error("SEMANTICO","Error semantico, No existe la variable con identificador "+self.id,self.linea,self.columna)
+            ReporteErrores.func(error)
             return None
 
         valorIdentificador = simbolo.valor
@@ -34,23 +35,20 @@ class AccesoLista(Expresion,Instruccion):
             if(isinstance(valor,float)): valor = int(valor)
 
             if(not isinstance(valorIdentificador,dict) and self.defArray):
-                print("Solo pueden inicializarse array dento de arrays")
-                print("Linea: "+self.linea)
-                print("Columna: "+self.columna)
+                error = Error("SEMANTICO","Error semantico, Solo pueden inicializarse array dento de arrays",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
 
             if(isinstance(valorIdentificador,str)):  #cadenas
                 if len(self.llaves) > 1:
-                    print("No puede usarse acceso [..][..]... para asignación de Cadenas")
-                    print("Linea: "+self.linea)
-                    print("Columna: "+self.columna)
+                    error = Error("SEMANTICO","Error semantico, No puede usarse acceso [..][..]... para asignación de Cadenas",self.linea,self.columna)
+                    ReporteErrores.func(error)
                     return None
 
                 if(isinstance(valorAgregar,float)): valorAgregar = int(valorAgregar)
                 if(isinstance(valorAgregar,dict)):
-                    print("Valor no valido para asignar caracteres de una cadena")
-                    print("Linea: "+self.linea)
-                    print("Columna: "+self.columna)
+                    error = Error("SEMANTICO","Error semantico, Valor no valido para asignar caracteres de una cadena",self.linea,self.columna)
+                    ReporteErrores.func(error)
                     return None
                 if(isinstance(valor,int)):
                     if(valor<=(len(valorIdentificador)-1)):
@@ -66,9 +64,8 @@ class AccesoLista(Expresion,Instruccion):
                     asignar = Asignacion(self.id,Primitivo(valorIdentificador,0,0),self.linea,self.columna,False)
                     asignar.ejecutar(ent,arbol)
                 else:
-                    print("Llave no valida para asingar caracteres de una cadena")
-                    print("Linea: "+self.linea)
-                    print("Columna: "+self.columna)
+                    error = Error("SEMANTICO","Error semantico, Llave no valida para asingar caracteres de una cadena",self.linea,self.columna)
+                    ReporteErrores.func(error)
                     return None
             elif(isinstance(valorIdentificador,dict)):  #diccionarios
                 valorFinal = self.asignarValorEnArray(ent,valorIdentificador,valorAgregar,1)
@@ -76,17 +73,15 @@ class AccesoLista(Expresion,Instruccion):
                 asignar = Asignacion(self.id,Primitivo(valorIdentificador,0,0),self.linea,self.columna,False)
                 asignar.ejecutar(ent,arbol)
             else:
-                print("Error semantico, el valor del acceso no es de tipo CADENA O ARRAY")
-                print("Linea: "+self.linea)
-                print("Columna: "+self.columna)
+                error = Error("SEMANTICO","Error semantico, el valor del acceso no es de tipo CADENA O ARRAY",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
 
     def asignarValorEnArray(self,ent,diccionario,valorAgregar,pos):
         temporal = diccionario
         if(isinstance(temporal,int) or isinstance(temporal,float)):
-            print("Error semantico, Ya se encuentra ocupado el indice.")
-            print("Linea: "+self.linea)
-            print("Columna: "+self.columna)
+            error = Error("SEMANTICO","Error semantico, Ya se encuentra ocupado el indice.",self.linea,self.columna)
+            ReporteErrores.func(error)
             return None
 
         if(len(self.llaves)<pos): return None
@@ -105,9 +100,8 @@ class AccesoLista(Expresion,Instruccion):
                     temporal[valor] = valorAgregar
             elif isinstance(temporal,str):
                 if(self.defArray):
-                    print("Solo pueden inicializarse array dento de arrays")
-                    print("Linea: "+self.linea)
-                    print("Columna: "+self.columna)
+                    error = Error("SEMANTICO","Error semantico, solo pueden inicializarse array dento de arrays",self.linea,self.columna)
+                    ReporteErrores.func(error)
                     return None
                 else:
                     if(isinstance(valor,int)):
@@ -123,18 +117,16 @@ class AccesoLista(Expresion,Instruccion):
 
                         return temporal
                     else:
-                        print("Llave no valida para asingar caracteres de una cadena")
-                        print("Linea: "+self.linea)
-                        print("Columna: "+self.columna)
+                        error = Error("SEMANTICO","Error semantico, Llave no valida para asingar caracteres de una cadena",self.linea,self.columna)
+                        ReporteErrores.func(error)
                         return None
         else:
             if(isinstance(temporal,dict)):
                 if valor not in temporal.keys():
                     temporal[valor] = {}
             else:
-                print("Asignación incorrecta a un valor que no es un Array")
-                print("Linea: "+self.linea)
-                print("Columna: "+self.columna)
+                error = Error("SEMANTICO","Error semantico, Asignación incorrecta a un valor que no es un Array",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
 
         resultado = self.asignarValorEnArray(ent,temporal[valor],valorAgregar,pos+1)
@@ -146,9 +138,8 @@ class AccesoLista(Expresion,Instruccion):
     def getValorImplicito(self,ent,arbol):
         simbolo = ent.obtener(str(self.id))
         if(simbolo == None):
-            print("No existe la variable con identificador "+self.id)
-            print("Linea: "+self.linea)
-            print("Columna: "+self.columna)
+            error = Error("SEMANTICO","Error semantico, No existe la variable con identificador "+self.id,self.linea,self.columna)
+            ReporteErrores.func(error)
             return None
 
         valorIdentificador = simbolo.valor
@@ -159,33 +150,28 @@ class AccesoLista(Expresion,Instruccion):
             if(isinstance(valorIdentificador,str)):  #cadenas
                 if(isinstance(valor,int)):
                     if(valor >= len(valorIdentificador)):
-                        print("El indice excede el tamaño de la cadena")
-                        print("Linea: "+self.linea)
-                        print("Columna: "+self.columna)
+                        error = Error("SEMANTICO","Error semantico, El indice excede el tamaño de la cadena",self.linea,self.columna)
+                        ReporteErrores.func(error)
                         return None
                     valorIdentificador = valorIdentificador[valor]
                 else:
-                    print("Llave no valida para obtener caracteres de una cadena")
-                    print("Linea: "+self.linea)
-                    print("Columna: "+self.columna)
+                    error = Error("SEMANTICO","Error semantico, Llave no valida para obtener caracteres de una cadena",self.linea,self.columna)
+                    ReporteErrores.func(error)
                     return None
             elif(isinstance(valorIdentificador,dict)):  #diccionarios
                 if(isinstance(valor,dict)): 
-                    print("Llave no valida para obtener valor del Array")
-                    print("Linea: "+self.linea)
-                    print("Columna: "+self.columna)
+                    error = Error("SEMANTICO","Error semantico, Llave no valida para obtener valor del Array",self.linea,self.columna)
+                    ReporteErrores.func(error)
                     return None
                 if valor not in valorIdentificador.keys():
-                    print("Llave "+str(valor)+" no existente en el Array")
-                    print("Linea: "+self.linea)
-                    print("Columna: "+self.columna)
+                    error = Error("SEMANTICO","Error semantico, Llave "+str(valor)+" no existente en el Array",self.linea,self.columna)
+                    ReporteErrores.func(error)
                     return None
                 else:
                     valorIdentificador = valorIdentificador[valor]
             else:
-                print("Error semantico, el valor del acceso no es de tipo CADENA O ARRAY")
-                print("Linea: "+self.linea)
-                print("Columna: "+self.columna)
+                error = Error("SEMANTICO","Error semantico, el valor del acceso no es de tipo CADENA O ARRAY",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
 
         return valorIdentificador

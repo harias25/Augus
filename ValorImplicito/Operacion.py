@@ -1,6 +1,8 @@
 from enum import Enum
 from ast.Expresion import Expresion
 from ast.Simbolo import TIPO_DATO as Tipo
+from Reporteria.Error import Error 
+import Reporteria.ReporteErrores as ReporteErrores
 
 class TIPO_OPERACION(Enum) :
     SUMA = 1
@@ -98,10 +100,12 @@ class Operacion(Expresion):
                     decimal = True
                     retorno +=caracter
                 else:
-                    print("Error convirtiendo la cadena!!")
+                    error = Error("SEMANTICO","Error semantico, No es posible convertir la cadena ("+cadena+") a un número",self.linea,self.columna)
+                    ReporteErrores.func(error)
                     break
             else:
-                print("Error convirtiendo la cadena!!")
+                error = Error("SEMANTICO","Error semantico, No es posible convertir la cadena ("+cadena+") a un número",self.linea,self.columna)
+                ReporteErrores.func(error)
                 break
                 
         if(retorno==""): return 0
@@ -122,7 +126,8 @@ class Operacion(Expresion):
         elif(self.tipo == TIPO_OPERACION.ID):
             simbolo = ent.obtener(str(self.valor))
             if(simbolo == None):
-                print("No existe la variable "+str(self.valor))
+                error = Error("SEMANTICO","Error semantico, No es existe la variable "+str(self.valor),self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
             
             valorRetorno = simbolo.getValorImplicito(ent,arbol)
@@ -153,7 +158,8 @@ class Operacion(Expresion):
                 return round(float(float(valor1) + float(valor2)),2)
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una SUMA")
+                error = Error("SEMANTICO","Error semantico, Error en tipos de datos permitidos para una SUMA",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
         
         #RESTA
@@ -173,7 +179,8 @@ class Operacion(Expresion):
                 return round(float(float(valor1) - float(valor2)),2)
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una RESTA")
+                error = Error("SEMANTICO","Error semantico, Error en tipos de datos permitidos para una RESTA",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
 
         #MULTIPLICACIÓN
@@ -193,7 +200,8 @@ class Operacion(Expresion):
                 return round(float(float(valor1) * float(valor2)),2)
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una MULTIPLICACIÓN")
+                error = Error("SEMANTICO","Error semantico, Error en tipos de datos permitidos para una MULTIPLICACION",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
         
         #DIVISION
@@ -206,7 +214,8 @@ class Operacion(Expresion):
             if(isinstance(valor2, int) or  isinstance(valor2, float)):
                 temp = int(valor2)
                 if(temp == 0):
-                    print("No es posible una DIVISION sobre CERO")
+                    error = Error("SEMANTICO","Error semantico, No es posible una división sobre CERO!",self.linea,self.columna)
+                    ReporteErrores.func(error)
                     return None
 
             #OPERACION DE ENTEROS
@@ -220,7 +229,8 @@ class Operacion(Expresion):
                 return round(float(float(valor1) / float(valor2)),2)
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una DIVISION")
+                error = Error("SEMANTICO","Error semantico, Error en tipos de datos permitidos para una DIVISION",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
 
         #MODULO
@@ -233,7 +243,8 @@ class Operacion(Expresion):
             if(isinstance(valor2, int) or  isinstance(valor2, float)):
                 temp = int(valor2)
                 if(temp == 0):
-                    print("No es posible un MODULO sobre CERO")
+                    error = Error("SEMANTICO","Error semantico, No es posible una modulo sobre CERO!",self.linea,self.columna)
+                    ReporteErrores.func(error)
                     return None
 
             #OPERACION DE ENTEROS
@@ -247,7 +258,8 @@ class Operacion(Expresion):
                 return round(float(float(valor1) % float(valor2)),2)
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para un MODULO")
+                error = Error("SEMANTICO","Error semantico, Error en tipos de datos permitidos para una MODULO",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
 
         #UNARIA
@@ -262,7 +274,8 @@ class Operacion(Expresion):
                 return round(float(float(valor1) * -1),2)
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipo de dato permitido para el operador UNARIO")
+                error = Error("SEMANTICO","Error semantico, Error en tipo de dato permitido para un UNARIO",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
         
         #ABSOLUTO
@@ -277,7 +290,8 @@ class Operacion(Expresion):
                 return round(abs(float(float(valor1))),2)
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipo de dato permitido para obtener el valor ABSOLUTO")
+                error = Error("SEMANTICO","Error semantico, Error en tipo de dato permitido para un VALOR ABSOLUTO",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
         
         #MAYOR
@@ -304,7 +318,8 @@ class Operacion(Expresion):
                 return int(len(str(valor1)) > len(str(valor2)))
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion relacional '>' ")
+                error = Error("SEMANTICO","Error semantico, Error en tipos de datos permitidos para una expresion relacional '>' ",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
         
         #MAYOR IGUAL
@@ -331,7 +346,8 @@ class Operacion(Expresion):
                 return int(len(str(valor1)) >= len(str(valor2)))
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion relacional '>=' ")
+                error = Error("SEMANTICO","Error semantico, Error en tipos de datos permitidos para una expresion relacional '>=' ",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
 
         #MENOR
@@ -358,7 +374,8 @@ class Operacion(Expresion):
                 return int(len(str(valor1)) < len(str(valor2)))
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion relacional '>' ")
+                error = Error("SEMANTICO","Error semantico, Error en tipos de datos permitidos para una expresion relacional '<' ",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
         
         #MENOR IGUAL
@@ -385,7 +402,8 @@ class Operacion(Expresion):
                 return int(len(str(valor1)) <= len(str(valor2)) ) 
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion relacional '>=' ")
+                error = Error("SEMANTICO","Error semantico, Error en tipos de datos permitidos para una expresion relacional '<=' ",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
 
         #IGUAL
@@ -408,7 +426,8 @@ class Operacion(Expresion):
                 return int(str(valor1) == str(valor2) )
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion relacional '>' ")
+                error = Error("SEMANTICO","Error semantico, Error en tipos de datos permitidos para una expresion relacional '==' ",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
         
         #DIFERENTE
@@ -431,7 +450,8 @@ class Operacion(Expresion):
                 return int(str(valor1) != str(valor2))
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion relacional '>=' ")
+                error = Error("SEMANTICO","Error semantico, Error en tipos de datos permitidos para una expresion relacional '!=' ",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
 
         #AND
@@ -448,7 +468,8 @@ class Operacion(Expresion):
                 return int(bool(valor1) and bool(valor2))
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion logica AND ")
+                error = Error("SEMANTICO","Error semantico, Error en tipos de datos permitidos para una expresion logica AND ",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
 
         #OR
@@ -465,7 +486,8 @@ class Operacion(Expresion):
                 return int(bool(valor1) or bool(valor2))
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion logica OR ")
+                error = Error("SEMANTICO","Error semantico, Error en tipos de datos permitidos para una expresion logica OR ",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
 
         #XOR
@@ -482,7 +504,8 @@ class Operacion(Expresion):
                 return int(bool(valor1) ^ bool(valor2))
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion logica XOR ")
+                error = Error("SEMANTICO","Error semantico, Error en tipos de datos permitidos para una expresion logica XOR ",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return None
 
         #NOT
@@ -495,7 +518,8 @@ class Operacion(Expresion):
                 return int(not bool(valor1))
             else:
                 #ERROR DE TIPOS DE DATOS PERMITIDOS PARA LA OPERACION
-                print("Error en tipos de datos permitidos para una expresion logica NOT ")
+                error = Error("SEMANTICO","Error semantico, Error en tipo de dato permitido para una expresion logica NOT ",self.linea,self.columna)
+                ReporteErrores.func(error)
                 return 
                 
         #PAND

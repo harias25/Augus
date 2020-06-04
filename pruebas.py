@@ -6,10 +6,13 @@ import ast.Declaracion as Declaracion
 import Primitivas.Exit as Exit
 import Condicionales.If as If
 import ast.AST as AST
+import Reporteria.Error as Error
+import Reporteria.ReporteErrores as ReporteErrores
 
 f = open("./etiquetas.txt", "r")
 input = f.read()
 
+listadoErrores = []
 g.textoEntrada = input
 instrucciones = g.parse(input)
 ts_global = TS.Entorno(None)
@@ -26,7 +29,8 @@ if(instrucciones != None):
     for ins in instrucciones:
         try:
             if(ast.existeEtiqueta(ins)):
-                print("Ya existe una etiqueta "+ins.id)
+                error = Error.Error("SEMANTICO","Error semantico, Ya existe la etiqueta "+ins.id,ins.linea,ins.columna)
+                ReporteErrores.func(error)
             else:
                 ast.agregarEtiqueta(ins)
         except:
@@ -55,7 +59,8 @@ if(main != None):
         if(siguiente!=None):
             siguiente.ejecutar(ts_global,ast)
 else:
-    print("no puede iniciarse el programa ya que no existe la etiqueta main:")
+    error = Error.Error("SEMANTICO","Error semantico, No puede iniciarse el programa ya que no existe la etiqueta main:",ins.linea,ins.columna)
+    ReporteErrores.func(error)
 
-
-
+reporteErrores = ReporteErrores.ReporteErrores()
+reporteErrores.generarReporte()

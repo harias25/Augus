@@ -9,7 +9,6 @@ class Entorno:
     def obtenerLocal(self, id) :
         id = id.lower()
         if not id in self.tabla :
-            #print('Error: variable ', id, ' no definida.')
             return None
 
         return self.tabla[id]
@@ -45,7 +44,6 @@ class Entorno:
                     break
 
         if(sym==None):
-            #print('Error: variable ', id, ' no definida.')
             return None
         else:
             return sym

@@ -14,19 +14,9 @@ class Declaracion(Instruccion):
     
     def ejecutar(self,ent,arbol):
         #validar si existe el simbolo dentro de la tabla
-        if(ent.existe(self.id)):
-            print("El identificador "+self.id+" ya existe dentro de la tabla de Simbolos")
-            return None
-        #validar que no exista una función con el mismo nombre
         simbolo = Simbolo(self.id,self.valor,self.linea,self.columna,self.puntero)
-        ent.agregar(simbolo)
-    
-    def getTipo(self,value):
-        if isinstance(value, str):
-            return Tipo.STRING
-        elif isinstance(value, int):
-            return Tipo.ENTERO
-        elif isinstance(value, float):
-            return Tipo.DOOBLE
+
+        if(ent.existe(self.id)):
+            ent.reemplazar(simbolo)
         else:
-            return Tipo.NULL
+            ent.agregar(simbolo)

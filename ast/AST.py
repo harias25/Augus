@@ -6,7 +6,8 @@ class AST:
 
     def existeEtiqueta(self,id):
         for etiqueta in self.etiquetas:
-            if(etiqueta.id == id):
+            comparacion = etiqueta.id == id.id
+            if(comparacion):
                 return True
 
         return False
