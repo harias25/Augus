@@ -33,7 +33,9 @@ class AccesoLista(Expresion,Instruccion):
                     return None
                 if(isinstance(valor,int)):
                     if(valor<=(len(valorIdentificador)-1)):
-                        valorIdentificador[valor] = str(valorAgregar)[0]
+                        valorAgregar = str(valorAgregar)[0] 
+
+                        valorIdentificador = valorIdentificador[0:valor] + valorAgregar + valorIdentificador[valor+1:len(valorIdentificador)]
                     else:
                         while (len(valorIdentificador)-1)!= valor-1:
                             valorIdentificador = valorIdentificador + ' '

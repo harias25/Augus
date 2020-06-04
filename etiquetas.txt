@@ -3,8 +3,11 @@ main:
     $t0 = 'Hola';
     print($t0[0][0][0][0]);
 
+    $t0[3] = 'i';
+    print($t0); #Holi
+
     $t0[5] = 'Mundo';
     #print("\n");
-    print($t0); #Hola M
+    print($t0); #Holi M
 
 
