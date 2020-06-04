@@ -8,6 +8,7 @@ import Condicionales.If as If
 import ast.AST as AST
 import Reporteria.Error as Error
 import Reporteria.ReporteErrores as ReporteErrores
+import Reporteria.ReporteTablaSimbolos as ReporteTablaSimbolos
 
 f = open("./etiquetas.txt", "r")
 input = f.read()
@@ -64,3 +65,6 @@ else:
 
 reporteErrores = ReporteErrores.ReporteErrores()
 reporteErrores.generarReporte()
+
+reporteTablas = ReporteTablaSimbolos.ReporteTablaSimbolos()
+reporteTablas.generarReporte(ts_global,ast)

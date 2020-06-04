@@ -22,12 +22,12 @@ class Simbolo(Expresion) :
     def getValorImplicito(self,ent,arbol):
         return self.valor
 
-    def getTipo(self,ent,arbol):
+    def getTipo(self):
         if isinstance(self.valor, str):
-            return TIPO_DATO.STRING
+            return "CADENA"
         elif isinstance(self.valor, int):
-            return TIPO_DATO.ENTERO
+            return "ENTERO"
         elif isinstance(self.valor, float):
-            return TIPO_DATO.DOOBLE
+            return "FLOAT"
         else:
-            return TIPO_DATO.NULL
+            return "ARRAY"

@@ -17,7 +17,7 @@ class ReporteErrores():
         listado = func(None)
 
 
-        contenido = "<html>" + '\n' + "<head>" + '\n' + "<title>Reporte de Errores RMB</title>" + '\n' + "</head>" + '\n'
+        contenido = "<html>" + '\n' + "<head>" + '\n' + "<title>Reporte de Errores</title>" + '\n' + "</head>" + '\n'
         contenido = contenido + "<body bgcolor=\"black\">" + '\n' + "<center><Font size=22 color=darkred>" + "Reporte de Errores del Archivo del Proyecto" + "</Font></center>" + '\n'
         contenido = contenido + "<hr >" + '\n' + "<font color=white>" + '\n' + "<center>" + '\n'
         contenido = contenido + "<table border=1 align=center style=\"width:100%;\" >" + '\n'
