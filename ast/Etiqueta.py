@@ -16,14 +16,17 @@ class Etiqueta(Instruccion) :
         salir = False
 
         for ins in self.instrucciones:
-            if(type(ins) is Exit.Exit): 
-                return ins
-            resultado = ins.ejecutar(ent,arbol)
-            if(type(resultado) is Exit.Exit): 
-                return resultado
-            elif((type(ins) is If.If) or (type(ins) is GoTo.GoTo)) and resultado == True:
-                salir = True
-                break
+            try:
+                if(type(ins) is Exit.Exit): 
+                    return ins
+                resultado = ins.ejecutar(ent,arbol)
+                if(type(resultado) is Exit.Exit): 
+                    return resultado
+                elif((type(ins) is If.If) or (type(ins) is GoTo.GoTo)) and resultado == True:
+                    salir = True
+                    break
+            except:
+                pass
 
         if(not salir):
             siguiente = arbol.obtenerSiguienteEtiqueta(self.id)

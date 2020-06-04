@@ -17,8 +17,11 @@ class If(Instruccion) :
             print("Se esperaba un valor 1 o 0 para validar el IF.")
 
         if(bool(resultado)):
-            self.instruccionV.ejecutar(ent,arbol)
-            return True
+            try:
+                self.instruccionV.ejecutar(ent,arbol)
+                return True
+            except:
+                return False
 
         return False
         

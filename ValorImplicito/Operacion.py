@@ -124,6 +124,11 @@ class Operacion(Expresion):
         elif(self.tipo == TIPO_OPERACION.SUMA):
             valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
             valor2 = self.operadorDer.getValorImplicito(ent,arbol)
+
+            #concatenación de strings
+            if(isinstance(valor1,str) and isinstance(valor2,str)):
+                return valor1 + valor2
+
             if(isinstance(valor1,str)): valor1 = self.obtenerValorNumerico(valor1)
             if(isinstance(valor2,str)): valor2 = self.obtenerValorNumerico(valor2)
 

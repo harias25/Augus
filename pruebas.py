@@ -22,27 +22,34 @@ declaracion2.ejecutar(ts_global,ast)
 
 
 #PRIMERA PASADA PARA GUARDAR TODAS LAS ETIQUETAS
-for ins in instrucciones:
-    if(ast.existeEtiqueta(ins)):
-        print("Ya existe una etiqueta "+ins.id)
-    else:
-        ast.agregarEtiqueta(ins)
+if(instrucciones != None):
+    for ins in instrucciones:
+        try:
+            if(ast.existeEtiqueta(ins)):
+                print("Ya existe una etiqueta "+ins.id)
+            else:
+                ast.agregarEtiqueta(ins)
+        except:
+                pass
 
 main = ast.obtenerEtiqueta("main")
 
 if(main != None):
     salir = False
     for ins in main.instrucciones:
-        if(type(ins) is Exit.Exit): 
-            break
-        resultado = ins.ejecutar(ts_global,ast)
-        if(type(resultado) is Exit.Exit): 
-            salir = True
-            break
-        elif((type(ins) is If.If) or (type(ins) is GoTo.GoTo)) and resultado == True:
-            salir = True
-            break
-    
+        try:
+            if(type(ins) is Exit.Exit): 
+                break
+            resultado = ins.ejecutar(ts_global,ast)
+            if(type(resultado) is Exit.Exit): 
+                salir = True
+                break
+            elif((type(ins) is If.If) or (type(ins) is GoTo.GoTo)) and resultado == True:
+                salir = True
+                break
+        except:
+            pass
+
     if(not salir):   
         siguiente = ast.obtenerSiguienteEtiqueta("main")
         if(siguiente!=None):

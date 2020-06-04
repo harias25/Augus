@@ -1,31 +1,10 @@
 #factorial 
 main:
-    print('**************CONVERSIONES A INT *********************');
-    $t0 = 4.5;
-    $t1 = (int)$t0;
-    $t3 = 'mundo';
-    $t2 = (int)$t3;
-    $t4 = (int)'h';
-    print($t1);
-    print($t2);
-    print($t4);
+    $t0 = 'Hola';
+    print($t0[0][0][0][0]);
 
-    print('**************CONVERSIONES A FLOAT *********************');
-    $t0 = 4;
-    $t1 = (float)$t0;
-    $t3 = 'mundo';
-    $t2 = (float)$t3;
-    $t4 = (float)'h';
-    print($t1);
-    print($t2);
-    print($t4);
+    $t0[5] = 'Mundo';
+    #print("\n");
+    print($t0); #Hola M
 
-    print('**************CONVERSIONES A CHAR *********************');
-    $t0 = 320;
-    $t1 = (char)$t0;
-    $t3 = 'mundo';
-    $t2 = (char)$t3;
-    $t4 = (char)104.0;
-    print($t1);
-    print($t2);
-    print($t4);
+

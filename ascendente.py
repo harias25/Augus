@@ -9,6 +9,7 @@ from ValorImplicito.Asignacion import Asignacion
 from ValorImplicito.Conversion import Conversion
 from ValorImplicito.Operacion import TIPO_OPERACION
 from ValorImplicito.Primitivo import Primitivo
+from ValorImplicito.AccesoLista import AccesoLista
 from  Primitivas.Imprimir import Imprimir
 from  Primitivas.Unset import Unset
 from  Primitivas.Exit import Exit
@@ -237,11 +238,19 @@ def p_instruccion(t) :
                         | puntero        
                         | go_to 
                         | if_instruccion
-                        | conversion'''
+                        | conversion
+                        | acceso_lista_asigna
+                        | error '''
     t[0] = t[1]
 
 def p_instruccion_imprimir(t) :
-    'imprimir_instr     : IMPRIMIR PARIZQ expresion PARDER PTCOMA'
+    'imprimir_instr     : IMPRIMIR PARIZQ tipo_var PARDER PTCOMA'
+    op = Operacion()
+    op.Indentficador(t[3],t.lexer.lineno,find_column(t.slice[2]))
+    t[0] =Imprimir(op)
+
+def p_instruccion_imprimir_acceso(t) :
+    'imprimir_instr     : IMPRIMIR PARIZQ acceso_lista PARDER PTCOMA'
     t[0] =Imprimir(t[3])
 
 def p_expresion(t):
@@ -403,6 +412,7 @@ def p_expresion_numerica(t):
     t[0] = op
 
 #********************************************** EXPRESIONES PRIMITIVAS ***********************************
+
 def p_absoluto(t):
     'absoluto : ABS PARIZQ primitiva PARDER '
     op = Operacion()
@@ -418,7 +428,8 @@ def p_expresion_primitiva(t):
                  | RET
                  | PILA 
                  | RA
-                 | PUNTERO '''
+                 | PUNTERO 
+                 | acceso_lista'''
     op = Operacion()
     if(t.slice[1].type == 'CADENA'):
         op.Primitivo(Primitivo(str(t[1]),t.lexer.lineno,find_column(t.slice[1])))
@@ -429,6 +440,28 @@ def p_expresion_primitiva(t):
     elif(t.slice[1].type == 'TEMP') or (t.slice[1].type == 'PARAM') or (t.slice[1].type == 'RET') or (t.slice[1].type == 'PILA') or (t.slice[1].type == 'RA') or (t.slice[1].type == 'PUNTERO'):
         op.Indentficador(t[1],t.lexer.lineno,find_column(t.slice[1]))
     t[0] = op
+
+#********************************************** LISTAS *******************************************
+def  p_acceso_lista(t):
+    'acceso_lista : tipo_var accesos'
+    t[0] = AccesoLista(t[1],t[2],None,t.lexer.lineno,1)
+
+def  p_acceso_lista_asigna(t):
+    'acceso_lista_asigna : tipo_var accesos IGUAL expresion PTCOMA'
+    t[0] = AccesoLista(t[1],t[2],t[4],t.lexer.lineno,1)
+
+def  p_accesos(t):
+    'accesos :  accesos acceso'
+    t[1].append(t[2])
+    t[0] = t[1]
+
+def  p_accesos_u(t):
+    'accesos :  acceso'
+    t[0] = [t[1]]
+
+def  p_acceso(t):
+    'acceso : CORIZQ primitiva CORDER'
+    t[0] = t[2]
 
 def p_error(t):
     print(t)
