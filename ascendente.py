@@ -206,6 +206,10 @@ def p_init(t) :
     'init            : etiquetas'
     t[0] = t[1]
 
+def p_init_empty(t):
+    'init            : empty'
+    t[0] = t[1]
+
 #********************************************** ETIQUETAS  **************************************
 def p_etiquetas_lista(t) :
     'etiquetas    : etiquetas etiqueta'
@@ -216,9 +220,18 @@ def p_etiquetas(t) :
     'etiquetas    : etiqueta '
     t[0] = [t[1]]
 
+def p_empty(t) :
+    'empty :'
+    t[0] = []
+
 def p_etiqueta(t) :
     'etiqueta    : ID DOSP instrucciones '
     t[0] = Etiqueta(t[1],t[3],t.lexer.lineno,find_column(t.slice[1]))
+
+def p_etiqueta_e(t) :
+    'etiqueta    : ID DOSP empty '
+    t[0] = Etiqueta(t[1],t[3],t.lexer.lineno,find_column(t.slice[1]))    
+    
 
 #********************************************** INSTRUCCIONES  ***********************************
 
