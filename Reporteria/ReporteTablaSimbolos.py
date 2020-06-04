@@ -28,7 +28,7 @@ class ReporteTablaSimbolos():
 
         for etiqueta in arbol.etiquetas:
             contenido = contenido + "<TR>"
-            contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>ETIQUETA</TD>" + '\n'
+            contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>"+etiqueta.getTipo()+"</TD>" + '\n'
             contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + etiqueta.id + "</TD>" + '\n'
             contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>-</TD>" + '\n'
             contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + str(etiqueta.linea)+ "</TD>" + '\n'

@@ -1,33 +1,24 @@
-?
-$t8 = 5;
-
-#agenda
+#factorial 
 main:
-    $t1 = array();
-    $t1[0]['nombre'] = 'Daniel';
-    $t1[0]['direccion'] = 'zona 4';
-    $t1[0]['telefono'][0] = '56457854';
-    $t1[0]['telefono'][1] = '48457585';
-
-
-    $t1[1]['nombre'] = 'Hugo';
-    $t1[1]['direccion'] = 'zona 8';
-    $t1[1]['telefono'][0] = '24659865';
-
-    $t1[2]['nombre'] = 'Manuel';
-    $t1[2]['direccion'] = 'zona 11';
-    $t1[2]['telefono'][0] = '47859685';
-    $t1[2]['telefono'][1] = '54659865';
-
-    $t2 = 0;
-while0:
-    if($t2>2) goto end0;
-    print($t1[$t2]['nombre']);
-    $t2 = $t2 + 1;
-    goto while0;
-
-end0:
-    goto etiquetax;
-
-end0:
+    $a0 = 4;
+    $ra = 0; #level 0
+    goto fact;
+ret0:
+    print($v0);
     exit;
+fact:
+    if ($a0>1) goto sino;
+    $v0 = 1;
+    if ($ra==0) goto ret0;
+    $ra = $ra - 1;
+    goto ret1;
+sino:
+    $a0 = $a0 - 1;
+    $ra = $ra + 1; #level ++
+    goto fact;
+ret1:
+    $a0 = $a0 + 1;
+    $v0 = $a0 * $v0;
+    if ($ra==0) goto ret0;
+    $ra = $ra - 1;
+    goto ret1;

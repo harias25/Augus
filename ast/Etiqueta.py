@@ -1,4 +1,5 @@
 from ast.Instruccion import Instruccion
+from ValorImplicito.Asignacion import Asignacion
 import ast.Entorno as TS
 import Primitivas.Exit as Exit
 import Condicionales.If as If
@@ -34,3 +35,25 @@ class Etiqueta(Instruccion) :
                 siguiente.ejecutar(ent,arbol)
  
         return None
+
+    def getTipo(self):
+        isProc = False
+        isFunc = False
+
+        for ins in self.instrucciones:
+            try:
+                if(type(ins) is Asignacion):
+                    if(ins.id.startswith('$a')):
+                        isProc = True
+                    
+                    if(ins.id.startswith('$v')):
+                        isFunc = True
+                        break
+
+            except:
+                pass
+            
+        if(isFunc and isProc): return "FUNCION"
+        if(isProc): return "PROCEDIMIENTO"
+            
+        return "ETIQUETA"
