@@ -1,24 +1,42 @@
-#factorial 
+
+ #ackerman 
 main:
-    $a0 = 4;
-    $ra = 0; #level 0
-    goto fact;
+    $s0 = array(); #stack
+    $sp = -1; #null pointer
+    $a0 = 3; #m
+    $a1 = 4; #n
+    $sp = $sp + 1;
+    $s0[$sp] = $a0; #push
+    goto ack;
 ret0:
     print($v0);
     exit;
-fact:
-    if ($a0>1) goto sino;
-    $v0 = 1;
-    if ($ra==0) goto ret0;
-    $ra = $ra - 1;
-    goto ret1;
-sino:
-    $a0 = $a0 - 1;
-    $ra = $ra + 1; #level ++
-    goto fact;
+ack:
+    #print($sp);
+    if($sp<0) goto ret3; #empy stack
+    $a0 = $s0[$sp];  #pop;
+    $sp = $sp -1;
+    if($a0!=0) goto ret1;
+    $t4 = $a0 + 1;
+    $a1 = $a1 + $t4;
+    goto ack;
 ret1:
-    $a0 = $a0 + 1;
-    $v0 = $a0 * $v0;
-    if ($ra==0) goto ret0;
-    $ra = $ra - 1;
-    goto ret1;
+    if($a1!=0) goto ret2;
+    $a1 = $a1 + 1 ;
+    $a0 = $a0 - 1 ;  # --m
+    $sp = $sp + 1 ;
+    $s0[$sp] = $a0; #push
+    goto ack;
+ret2:
+    $a0 = $a0 -1; # --m
+    $sp = $sp + 1 ;
+    $s0[$sp] = $a0;
+    $a0 = $a0 +1; # ++m
+    $sp = $sp +1;
+    $s0[$sp] = $a0;
+    $a1 = $a1 -1;
+    goto ack;
+ret3:
+    $v0 = $a1;
+    goto ret0;
+

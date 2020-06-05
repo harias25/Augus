@@ -9,6 +9,8 @@ import ast.AST as AST
 import Reporteria.Error as Error
 import Reporteria.ReporteErrores as ReporteErrores
 import Reporteria.ReporteTablaSimbolos as ReporteTablaSimbolos
+import sys
+sys.setrecursionlimit(20000)
 
 f = open("./etiquetas.txt", "r")
 input = f.read()
