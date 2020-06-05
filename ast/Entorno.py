@@ -15,63 +15,17 @@ class Entorno:
 
     def existe(self,id):
         id = id.lower()
-        sym = self.obtenerLocal(id)
-        if(sym == None):
-            sig = self.anterior
-            while(sig != None):
-                if not id in sig.tabla :
-                    sym=None
-                    sig = sig.siguiente
-                else:
-                    return True
-
-        if(sym==None):
-            return False
-        else:
-            return True
+        return self.obtenerLocal(id)
 
     def obtener(self,id):
-        id = id.lower()
-        sym = self.obtenerLocal(id)
-        if(sym == None):
-            sig = self.anterior
-            while(sig != None):
-                if not id in sig.tabla :
-                    sym=None
-                    sig = sig.siguiente
-                else:
-                    sym=sig.tabla[id]
-                    break
-
-        if(sym==None):
-            return None
-        else:
-            return sym
+        return self.obtenerLocal(id)
             
     def eliminar(self,id):
         id = id.lower()
-        sym = self.obtenerLocal(id)
-        if(sym == None):
-            sig = self.anterior
-            while(sig != None):
-                if not id in sig.tabla :
-                    sig = sig.siguiente
-                else:
-                    del sig.tabla[id]
-                    break
-        else:
+        if(self.obtenerLocal(id) != None):
             del self.tabla[id]
 
     def reemplazar(self,simbolo):
         simbolo.id = simbolo.id.lower()
-        sym = self.obtenerLocal(simbolo.id)
-        if(sym == None):
-            sig = self.anterior
-            while(sig != None):
-                if not simbolo.id in sig.tabla :
-                    sig = sig.siguiente
-                else:
-                    sig.tabla[simbolo.id] = simbolo
-                    break
-        else:
+        if(self.obtenerLocal(simbolo.id) != None):
             self.tabla[simbolo.id] = simbolo

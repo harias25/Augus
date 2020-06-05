@@ -20,3 +20,5 @@ class Declaracion(Instruccion):
             ent.reemplazar(simbolo)
         else:
             ent.agregar(simbolo)
+        
+        return False

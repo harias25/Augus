@@ -12,6 +12,6 @@ class Imprimir(Instruccion) :
             error = Error("SEMANTICO","Error semantico, no es posible imprimir un Array!!"+self.id,self.linea,self.columna)
             ReporteErrores.func(error)
         elif(valor == None):
-            return None
+            return False
         else:
             print('> ', valor)

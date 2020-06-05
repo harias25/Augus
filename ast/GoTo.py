@@ -18,9 +18,9 @@ class GoTo(Instruccion) :
             error = Error("SEMANTICO","Error semantico, no existe la etiqueta "+self.id,self.linea,self.columna)
             ReporteErrores.func(error)
         else:
-            resultado = etiqueta.ejecutar(ent,arbol)
-            if(type(resultado) is Exit.Exit): 
-                return resultado   
+            etiqueta.ejecutar(ent,arbol)
+           # if(type(resultado) is Exit.Exit): 
+            #    return resultado   
             return True
 
         return False

@@ -10,7 +10,7 @@ import Reporteria.Error as Error
 import Reporteria.ReporteErrores as ReporteErrores
 import Reporteria.ReporteTablaSimbolos as ReporteTablaSimbolos
 import sys
-sys.setrecursionlimit(10**6)
+sys.setrecursionlimit(10**9)
 
 f = open("./etiquetas.txt", "r")
 input = f.read()
@@ -44,18 +44,9 @@ main = ast.obtenerEtiqueta("main")
 if(main != None):
     salir = False
     for ins in main.instrucciones:
-        try:
-            if(type(ins) is Exit.Exit): 
-                break
-            resultado = ins.ejecutar(ts_global,ast)
-            if(type(resultado) is Exit.Exit): 
-                salir = True
-                break
-            elif((type(ins) is If.If) or (type(ins) is GoTo.GoTo)) and resultado == True:
-                salir = True
-                break
-        except:
-            pass
+        if(ins.ejecutar(ts_global,ast) == True):
+            salir = True
+            break
 
     if(not salir):   
         siguiente = ast.obtenerSiguienteEtiqueta("main")

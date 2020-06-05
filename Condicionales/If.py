@@ -21,12 +21,10 @@ class If(Instruccion) :
             ReporteErrores.func(error)
 
         if(bool(resultado)):
-            try:
-                ins_result = self.instruccionV.ejecutar(ent,arbol)
-                #if(isinstance(ins_result),Exit): return ins_result
-                return True
-            except:
-                return False
+           # try:
+               return self.instruccionV.ejecutar(ent,arbol)
+           # except:
+           #     return False
 
         return False
         
