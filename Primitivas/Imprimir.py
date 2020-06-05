@@ -9,7 +9,7 @@ class Imprimir(Instruccion) :
     def ejecutar(self,ent,arbol):
         valor = self.cad.getValorImplicito(ent,arbol)
         if(isinstance(valor,dict)):
-            error = Error("SEMANTICO","Error semantico, no es posible imprimir un Array!!"+self.id,self.linea,self.columna)
+            error = Error("SEMANTICO","Error semantico, no es posible imprimir un Array!!",0,1)
             ReporteErrores.func(error)
         elif(valor == None):
             return False
