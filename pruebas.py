@@ -56,8 +56,8 @@ else:
     error = Error.Error("SEMANTICO","Error semantico, No puede iniciarse el programa ya que no existe la etiqueta main:",ins.linea,ins.columna)
     ReporteErrores.func(error)
 
-#reporteErrores = ReporteErrores.ReporteErrores()
-#reporteErrores.generarReporte()
+reporteErrores = ReporteErrores.ReporteErrores()
+reporteErrores.generarReporte()
 
 #reporteTablas = ReporteTablaSimbolos.ReporteTablaSimbolos()
 #reporteTablas.generarReporte(ts_global,ast)

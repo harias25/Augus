@@ -17,11 +17,11 @@ class Etiqueta(Instruccion) :
         salir = False
 
         for ins in self.instrucciones:
-            #try:
-            if(ins.ejecutar(ent,arbol) == True):
-                return True
-            #except:
-            #    pass
+            try:
+                if(ins.ejecutar(ent,arbol) == True):
+                    return True
+            except:
+                pass
 
         if(not salir):
             siguiente = arbol.obtenerSiguienteEtiqueta(self.id)
