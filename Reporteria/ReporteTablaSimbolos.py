@@ -37,8 +37,8 @@ class ReporteTablaSimbolos():
 
         contenido = contenido + '\n' + "</center>" + '\n' + "</table>" + "</body>" + '\n' + "</html>"
 
-        f = open ('./TablaSimbolos.html','w')
+        f = open ('TablaSimbolos.html','w')
         f.write(contenido)
         f.close()
 
-        webbrowser.open_new_tab('./TablaSimbolos.html')
+        webbrowser.open_new_tab('TablaSimbolos.html')

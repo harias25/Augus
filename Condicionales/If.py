@@ -2,6 +2,7 @@ from ast.Instruccion import Instruccion
 import ast.Entorno as TS
 from Reporteria.Error import Error 
 import Reporteria.ReporteErrores as ReporteErrores
+import Primitivas.Exit as Exit
 
 class If(Instruccion) :
     def __init__(self,  condicion, instruccionV,linea,columna) :
@@ -21,7 +22,8 @@ class If(Instruccion) :
 
         if(bool(resultado)):
             try:
-                self.instruccionV.ejecutar(ent,arbol)
+                ins_result = self.instruccionV.ejecutar(ent,arbol)
+                #if(isinstance(ins_result),Exit): return ins_result
                 return True
             except:
                 return False

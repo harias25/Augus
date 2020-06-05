@@ -44,9 +44,9 @@ class ReporteErrores():
 
         contenido = contenido + '\n' + "</center>" + '\n' + "</table>" + "</body>" + '\n' + "</html>"
 
-        f = open ('./reporteErrores.html','w')
+        f = open ('reporteErrores.html','w')
         f.write(contenido)
         f.close()
 
-        webbrowser.open_new_tab('./reporteErrores.html')
+        webbrowser.open_new_tab('reporteErrores.html')
         

@@ -79,7 +79,8 @@ class AccesoLista(Expresion,Instruccion):
 
     def asignarValorEnArray(self,ent,diccionario,valorAgregar,pos):
         temporal = diccionario
-        if(isinstance(temporal,int) or isinstance(temporal,float)):
+
+        if((isinstance(temporal,int) or isinstance(temporal,float)) and pos > 1):
             error = Error("SEMANTICO","Error semantico, Ya se encuentra ocupado el indice.",self.linea,self.columna)
             ReporteErrores.func(error)
             return None
@@ -120,6 +121,7 @@ class AccesoLista(Expresion,Instruccion):
                         error = Error("SEMANTICO","Error semantico, Llave no valida para asingar caracteres de una cadena",self.linea,self.columna)
                         ReporteErrores.func(error)
                         return None
+            return temporal
         else:
             if(isinstance(temporal,dict)):
                 if valor not in temporal.keys():
