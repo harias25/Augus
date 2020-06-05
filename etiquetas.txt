@@ -4,7 +4,7 @@ main:
     $s0 = array(); #stack
     $sp = -1; #null pointer
     $a0 = 3; #m
-    $a1 = 2; #n
+    $a1 = 4; #n
     $sp = $sp + 1;
     $s0[$sp] = $a0; #push
     goto ack;

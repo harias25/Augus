@@ -39,14 +39,5 @@ class Asignacion(Instruccion):
                 else:
                     simbolo.valor = self.valor
                     ent.reemplazar(simbolo)
-
-
-    def getTipo(self,value):
-        if isinstance(value, str):
-            return Tipo.STRING
-        elif isinstance(value, int):
-            return Tipo.ENTERO
-        elif isinstance(value, float):
-            return Tipo.DOOBLE
-        else:
-            return Tipo.NULL
+        
+        return False 
