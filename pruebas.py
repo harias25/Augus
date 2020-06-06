@@ -12,6 +12,7 @@ import Reporteria.ReporteTablaSimbolos as ReporteTablaSimbolos
 import Reporteria.ReporteAST as ReporteAST
 import ValorImplicito.Asignacion as Asignacion
 import ValorImplicito.Conversion as Conversion
+import Reporteria.ReporteGramatical as ReporteGramatical
 
 import sys
 sys.setrecursionlimit(10**9)
@@ -65,11 +66,15 @@ else:
     error = Error.Error("SEMANTICO","Error semantico, No puede iniciarse el programa ya que no existe la etiqueta main:",0,0)
     ReporteErrores.func(error)
 
-reporteErrores = ReporteErrores.ReporteErrores()
-reporteErrores.generarReporte()
+#reporteErrores = ReporteErrores.ReporteErrores()
+#reporteErrores.generarReporte()
 
-reporteTablas = ReporteTablaSimbolos.ReporteTablaSimbolos()
-reporteTablas.generarReporte(ts_global,ast)
+#reporteTablas = ReporteTablaSimbolos.ReporteTablaSimbolos()
+#reporteTablas.generarReporte(ts_global,ast)
 
-reporteAST = ReporteAST.ReporteAST()
-reporteAST.graficar(instrucciones)
+#reporteAST = ReporteAST.ReporteAST()
+#reporteAST.graficar(instrucciones)
+
+listado = g.func(1,None).copy()
+reporteGramatical = ReporteGramatical.ReporteGramatical()
+reporteGramatical.generarReporte(listado[0])
