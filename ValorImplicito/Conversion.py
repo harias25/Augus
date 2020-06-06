@@ -3,6 +3,8 @@ from ast.Declaracion import Declaracion
 from ValorImplicito.Primitivo import Primitivo
 from ValorImplicito.Asignacion import Asignacion
 from ast.Simbolo import TIPO_DATO as Tipo
+import Reporteria.Error as Error
+import Reporteria.ReporteErrores as ReporteErrores
 
 class Conversion(Instruccion):
     def __init__(self,id,valor,tipo,linea,columna):
@@ -11,9 +13,23 @@ class Conversion(Instruccion):
         self.id = id
         self.valor = valor
         self.tipo = tipo
+        self.declarada = None
+
+    def setAmbito(self,ambito):
+        self.declarada = ambito
 
     def ejecutar(self,ent,arbol):
         value = self.valor.getValorImplicito(ent,arbol) 
+
+        if(isinstance(value,dict)):
+            els = list(value.items())
+            value = els[0][1]
+
+        if(isinstance(value,dict)):
+            error = Error.Error("SEMANTICO","Error semantico, La primera posición del array es otro array. ",self.linea,self.columna)
+            ReporteErrores.func(error)
+            return False
+
         if(self.tipo == 'int'):
             if(isinstance(value,float)):
                 value = int(value)
@@ -42,4 +58,7 @@ class Conversion(Instruccion):
         
         primitivo = Primitivo(value,self.linea,self.columna)
         asignacion = Asignacion(self.id,primitivo,self.linea,self.columna,False)
+        asignacion.setAmbito(self.declarada)
         asignacion.ejecutar(ent,arbol)
+
+        return False

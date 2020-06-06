@@ -11,6 +11,7 @@ import Reporteria.ReporteErrores as ReporteErrores
 import Reporteria.ReporteTablaSimbolos as ReporteTablaSimbolos
 import Reporteria.ReporteAST as ReporteAST
 import ValorImplicito.Asignacion as Asignacion
+import ValorImplicito.Conversion as Conversion
 
 import sys
 sys.setrecursionlimit(10**9)
@@ -48,7 +49,7 @@ if(main != None):
     salir = False
     for ins in main.instrucciones:
         try:
-            if(isinstance(ins,Asignacion.Asignacion)):
+            if(isinstance(ins,Asignacion.Asignacion) or isinstance(ins,Conversion.Conversion)):
                 ins.setAmbito("main")
 
             if(ins.ejecutar(ts_global,ast) == True):

@@ -17,20 +17,24 @@ class ReporteTablaSimbolos():
         
 
         for key in ent.tabla:
-            s = ent.tabla[key]
-            contenido = contenido + "<TR>"
-            tipo = s.getTipo()
-            contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + tipo + "</TD>" + '\n'
-            contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + s.id + "</TD>" + '\n'
-            contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + s.ambito + "</TD>" + '\n'
-            if(isinstance(s.valor,dict)):
-                contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + str(len(s.valor)) +" / "+str(s.getNiveles(s.valor))+ "</TD>" + '\n'
-            else:
-                contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" +"-" + "</TD>" + '\n'
-            contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + str(s.valor) + "</TD>" + '\n'
-            contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + str(s.linea)+ "</TD>" + '\n'
-            contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + str(s.columna) + "</TD>" + '\n'
-            contenido = contenido + "</TR>" + '\n'
+            try:
+                s = ent.tabla[key]
+                contenido = contenido + "<TR>"
+                tipo = s.getTipo()
+                contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + tipo + "</TD>" + '\n'
+                contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + s.id + "</TD>" + '\n'
+                contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + s.ambito + "</TD>" + '\n'
+                if(isinstance(s.valor,dict)):
+                    contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + str(len(s.valor)) +" / "+str(s.getNiveles(s.valor))+ "</TD>" + '\n'
+                else:
+                    contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" +"-" + "</TD>" + '\n'
+                contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + str(s.valor) + "</TD>" + '\n'
+                contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + str(s.linea)+ "</TD>" + '\n'
+                contenido = contenido + "<TD style=\"font-size: 15px; color:white;\" color:white align=center>" + str(s.columna) + "</TD>" + '\n'
+                contenido = contenido + "</TR>" + '\n'
+            except:
+                pass
+            
 
         for etiqueta in arbol.etiquetas:
             contenido = contenido + "<TR>"

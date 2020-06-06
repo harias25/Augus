@@ -5,6 +5,7 @@ import Primitivas.Exit as Exit
 import Condicionales.If as If
 import ast.GoTo as GoTo
 import ValorImplicito.Asignacion as Asignacion
+import ValorImplicito.Conversion as Conversion
 
 class Etiqueta(Instruccion) :
     def __init__(self,  id, instrucciones,linea,columna) :
@@ -19,7 +20,7 @@ class Etiqueta(Instruccion) :
 
         for ins in self.instrucciones:
             try:
-                if(isinstance(ins,Asignacion.Asignacion)):
+                if(isinstance(ins,Asignacion.Asignacion) or isinstance(ins,Conversion.Conversion)):
                     ins.setAmbito(self.id)
                 if(ins.ejecutar(ent,arbol) == True):
                     return True

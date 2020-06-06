@@ -66,6 +66,7 @@ tokens  = [
 	'DECIMAL',
     'ENTERO',
     'CADENA',
+    'CADENA2',
     'PAND',
     'RA',
     'PUNTERO',
@@ -160,6 +161,11 @@ def t_PUNTERO(t):
 
 def t_CADENA(t):
     r'\'.*?\''
+    t.value = t.value[1:-1] # remuevo las comillas
+    return t 
+
+def t_CADENA2(t):
+    r'\".*?\"'
     t.value = t.value[1:-1] # remuevo las comillas
     return t 
 
@@ -269,6 +275,13 @@ def p_instruccion_imprimir(t) :
 def p_instruccion_imprimir_acceso(t) :
     'imprimir_instr     : IMPRIMIR PARIZQ acceso_lista PARDER PTCOMA'
     t[0] =Imprimir(t[3])
+
+def p_instruccion_imprimir_cadena(t) :
+    '''imprimir_instr     : IMPRIMIR PARIZQ CADENA  PARDER PTCOMA
+                          | IMPRIMIR PARIZQ CADENA2 PARDER PTCOMA'''
+    op = Operacion()
+    op.Primitivo(Primitivo("\n",t.lexer.lineno,0))
+    t[0] = Imprimir(op)
 
 def p_expresion(t):
     '''expresion : primitiva 
@@ -444,6 +457,7 @@ def p_expresion_primitiva(t):
     '''primitiva : ENTERO
                  | DECIMAL
                  | CADENA
+                 | CADENA2
                  | TEMP 
                  | PARAM
                  | RET
@@ -452,7 +466,7 @@ def p_expresion_primitiva(t):
                  | PUNTERO 
                  | acceso_lista'''
     op = Operacion()
-    if(t.slice[1].type == 'CADENA'):
+    if(t.slice[1].type == 'CADENA' or t.slice[1].type == 'CADENA2'):
         op.Primitivo(Primitivo(str(t[1]),t.lexer.lineno,find_column(t.slice[1])))
     elif(t.slice[1].type == 'DECIMAL'):
         op.Primitivo(Primitivo(float(t[1]),t.lexer.lineno,find_column(t.slice[1])))
