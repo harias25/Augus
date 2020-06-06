@@ -4,6 +4,7 @@ import ast.Entorno as TS
 import Primitivas.Exit as Exit
 import Condicionales.If as If
 import ast.GoTo as GoTo
+import ValorImplicito.Asignacion as Asignacion
 
 class Etiqueta(Instruccion) :
     def __init__(self,  id, instrucciones,linea,columna) :
@@ -18,6 +19,8 @@ class Etiqueta(Instruccion) :
 
         for ins in self.instrucciones:
             try:
+                if(isinstance(ins,Asignacion.Asignacion)):
+                    ins.setAmbito(self.id)
                 if(ins.ejecutar(ent,arbol) == True):
                     return True
             except:

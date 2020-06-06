@@ -10,6 +10,7 @@ import Reporteria.Error as Error
 import Reporteria.ReporteErrores as ReporteErrores
 import Reporteria.ReporteTablaSimbolos as ReporteTablaSimbolos
 import Reporteria.ReporteAST as ReporteAST
+import ValorImplicito.Asignacion as Asignacion
 
 import sys
 sys.setrecursionlimit(10**9)
@@ -23,8 +24,8 @@ instrucciones = g.parse(input)
 ts_global = TS.Entorno(None)
 ast = AST.AST(instrucciones) 
 
-declaracion1 = Declaracion.Declaracion('$ra',0,0,0,"")
-declaracion2 = Declaracion.Declaracion('$sp',0,0,0,"")
+declaracion1 = Declaracion.Declaracion('$ra',0,0,0,"","GLOBAL")
+declaracion2 = Declaracion.Declaracion('$sp',0,0,0,"","GLOBAL")
 declaracion1.ejecutar(ts_global,ast)
 declaracion2.ejecutar(ts_global,ast)
 
@@ -47,6 +48,9 @@ if(main != None):
     salir = False
     for ins in main.instrucciones:
         try:
+            if(isinstance(ins,Asignacion.Asignacion)):
+                ins.setAmbito("main")
+
             if(ins.ejecutar(ts_global,ast) == True):
                 salir = True
                 break
@@ -57,14 +61,14 @@ if(main != None):
         if(siguiente!=None):
             siguiente.ejecutar(ts_global,ast)
 else:
-    error = Error.Error("SEMANTICO","Error semantico, No puede iniciarse el programa ya que no existe la etiqueta main:",ins.linea,ins.columna)
+    error = Error.Error("SEMANTICO","Error semantico, No puede iniciarse el programa ya que no existe la etiqueta main:",0,0)
     ReporteErrores.func(error)
 
-#reporteErrores = ReporteErrores.ReporteErrores()
-#reporteErrores.generarReporte()
+reporteErrores = ReporteErrores.ReporteErrores()
+reporteErrores.generarReporte()
 
-#reporteTablas = ReporteTablaSimbolos.ReporteTablaSimbolos()
-#reporteTablas.generarReporte(ts_global,ast)
+reporteTablas = ReporteTablaSimbolos.ReporteTablaSimbolos()
+reporteTablas.generarReporte(ts_global,ast)
 
 reporteAST = ReporteAST.ReporteAST()
 reporteAST.graficar(instrucciones)

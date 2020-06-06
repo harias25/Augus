@@ -5,16 +5,17 @@ from ast.Simbolo import Simbolo
 
 class Declaracion(Instruccion):
 
-    def __init__(self,id,valor,linea, columna,puntero):
+    def __init__(self,id,valor,linea, columna,puntero,declarada):
         self.id = id
         self.valor = valor
         self.linea = linea
         self.columna = columna
         self.puntero = puntero
+        self.declarada = declarada
     
     def ejecutar(self,ent,arbol):
         #validar si existe el simbolo dentro de la tabla
-        simbolo = Simbolo(self.id,self.valor,self.linea,self.columna,self.puntero)
+        simbolo = Simbolo(self.id,self.valor,self.linea,self.columna,self.puntero,self.declarada)
 
         if(ent.existe(self.id)):
             ent.reemplazar(simbolo)

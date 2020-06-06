@@ -9,6 +9,10 @@ class Asignacion(Instruccion):
         self.id = id
         self.valor = valor
         self.puntero = parametro
+        self.declarada = None
+
+    def setAmbito(self,ambito):
+        self.declarada = ambito
 
     def ejecutar(self,ent,arbol):
 
@@ -19,7 +23,7 @@ class Asignacion(Instruccion):
 
         if(self.puntero==False):
             if(simbolo == None):
-                declarar = Declaracion(str(self.id),value,self.linea,self.columna,"")
+                declarar = Declaracion(str(self.id),value,self.linea,self.columna,"",self.declarada)
                 declarar.ejecutar(ent,arbol)
             else:
                 if(simbolo.puntero != ""):
@@ -34,7 +38,7 @@ class Asignacion(Instruccion):
                 simboloP = ent.obtener(self.valor.valor)
                 simboloP.punteros.append(self.id)
                 if(simbolo == None):
-                    declarar = Declaracion(str(self.id),self.valor,self.linea,self.columna,self.valor.valor)
+                    declarar = Declaracion(str(self.id),self.valor,self.linea,self.columna,self.valor.valor,self.declarada)
                     declarar.ejecutar(ent,arbol)
                 else:
                     simbolo.valor = self.valor

@@ -53,7 +53,7 @@ class ReporteAST():
                 self.contenido += padreI + "[label = \"" + type(nodo).__name__ + "\", style = filled, color = darkturquoise];\n"
             self.contenido += padre+"->"+padreI+";\n"
             for key in nodo.__dict__:
-                if(key!="linea" and key!="columna" and key!="puntero" and key!="defArray"):
+                if(key!="linea" and key!="columna" and key!="declarada"  and key!="puntero" and key!="defArray"):
                     if(isinstance(nodo.__dict__[key],V.Operacion.Operacion)):
                         if(isinstance(nodo,V.Asignacion.Asignacion)):
                             self.contador=self.contador+1
