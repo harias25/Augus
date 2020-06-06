@@ -9,6 +9,8 @@ import ast.AST as AST
 import Reporteria.Error as Error
 import Reporteria.ReporteErrores as ReporteErrores
 import Reporteria.ReporteTablaSimbolos as ReporteTablaSimbolos
+import Reporteria.ReporteAST as ReporteAST
+
 import sys
 sys.setrecursionlimit(10**9)
 
@@ -44,10 +46,12 @@ main = ast.obtenerEtiqueta("main")
 if(main != None):
     salir = False
     for ins in main.instrucciones:
-        if(ins.ejecutar(ts_global,ast) == True):
-            salir = True
-            break
-
+        try:
+            if(ins.ejecutar(ts_global,ast) == True):
+                salir = True
+                break
+        except:
+            pass
     if(not salir):   
         siguiente = ast.obtenerSiguienteEtiqueta("main")
         if(siguiente!=None):
@@ -56,8 +60,11 @@ else:
     error = Error.Error("SEMANTICO","Error semantico, No puede iniciarse el programa ya que no existe la etiqueta main:",ins.linea,ins.columna)
     ReporteErrores.func(error)
 
-reporteErrores = ReporteErrores.ReporteErrores()
-reporteErrores.generarReporte()
+#reporteErrores = ReporteErrores.ReporteErrores()
+#reporteErrores.generarReporte()
 
 #reporteTablas = ReporteTablaSimbolos.ReporteTablaSimbolos()
 #reporteTablas.generarReporte(ts_global,ast)
+
+reporteAST = ReporteAST.ReporteAST()
+reporteAST.graficar(instrucciones)

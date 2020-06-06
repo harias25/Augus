@@ -1,34 +1,40 @@
-#agenda
+ #ackerman 
 main:
-    $t1 = array();
-    $t1[0]['nombre'] = 'Daniel';
-    $t1[0]['direccion'] = 'zona 4';
-    $t1[0]['telefono'][0] = '56457854';
-    $t1[0]['telefono'][1] = '48457585';
-
-
-    $t1[1]['nombre'] = 'Hugo';
-    $t1[1]['direccion'] = 'zona 8';
-    $t1[1]['telefono'][0] = '24659865';
-    $t1[1]['telefono'][1] = '12312322';
-
-    $t1[2]['nombre'] = 'Manuel';
-    $t1[2]['direccion'] = 'zona 11';
-    $t1[2]['telefono'][0] = '47859685';
-    $t1[2]['telefono'][1] = '54659865';
-
-    $t2 = 0;
-while0:
-    if($t2>2) goto end0;
-    $t0 = $t1[$t2]['nombre'] + ' / Direccion: ';
-    $t0 = $t0 + $t1[$t2]['direccion'];
-    $t3 = 'Telefono 1: '+$t1[$t2]['telefono'][0];
-    $t4 = 'Telefono 2: '+$t1[$t2]['telefono'][1];
-    print($t0);
-    print($t3);
-    print($t4);
-    $t2 = $t2 + 1;
-    goto while0;
-
-end0:
+    $s0 = array(); #stack
+    $sp = -1; #null pointer
+    $a0 = 3; #m
+    $a1 = 2; #n
+    $sp = $sp + 1;
+    $s0[$sp] = $a0; #push
+    goto ack;
+ret0:
+    print($v0);
     exit;
+ack:
+    print($sp);
+    if($sp<0) goto ret3; #empy stack
+    $a0 = $s0[$sp];  #pop;
+    $sp = $sp -1;
+    if($a0!=0) goto ret1;
+    $t4 = $a0 + 1;
+    $a1 = $a1 + $t4;
+    goto ack;
+ret1:
+    if($a1!=0) goto ret2;
+    $a1 = $a1 + 1 ;
+    $a0 = $a0 - 1 ;  # --m
+    $sp = $sp + 1 ;
+    $s0[$sp] = $a0; #push
+    goto ack;
+ret2:
+    $a0 = $a0 -1; # --m
+    $sp = $sp + 1 ;
+    $s0[$sp] = $a0;
+    $a0 = $a0 +1; # ++m
+    $sp = $sp +1;
+    $s0[$sp] = $a0;
+    $a1 = $a1 -1;
+    goto ack;
+ret3:
+    $v0 = $a1;
+    goto ret0;
