@@ -2,6 +2,10 @@ class Entorno:
     def __init__(self,anterior):
         self.tabla = {}
         self.anterior = anterior
+        self.consola = None
+
+    def asignarConsola(self,consola):
+        self.consola = consola
 
     def agregar(self, simbolo) :
         self.tabla[simbolo.id.lower()] = simbolo

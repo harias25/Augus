@@ -176,7 +176,7 @@ def t_COMENTARIO_SIMPLE(t):
     t.lexer.lineno += 1
 
 # Caracteres ignorados
-t_ignore = " \t"
+t_ignore = " \t\r"
 
 def t_newline(t):
     r'\n+'
@@ -320,7 +320,7 @@ def p_instruccion_imprimir_cadena(t) :
     '''imprimir_instr     : IMPRIMIR PARIZQ CADENA  PARDER PTCOMA
                           | IMPRIMIR PARIZQ CADENA2 PARDER PTCOMA'''
     op = Operacion()
-    op.Primitivo(Primitivo("\n",t.lexer.lineno,0))
+    op.Primitivo(Primitivo(t[3],t.lexer.lineno,0))
     t[0] = Imprimir(op)
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('imprimir_instr ->IMPRIMIR PARIZQ CADENA  PARDER PTCOMA','imprimir_instr.instr = Print(CADENA);',lista)
@@ -667,8 +667,13 @@ def  p_acceso(t):
     func(0,gramatical)
 
 def p_error(t):
-    error = Error.Error("SINTACTICO","Error sintactico, no se esperaba el valor "+t.value,t.lexer.lineno,find_column(t))
-    ReporteErrores.func(error)
+    try:
+        error = Error.Error("SINTACTICO","Error sintactico, no se esperaba el valor "+t.value,t.lexer.lineno,find_column(t))
+        ReporteErrores.func(error)
+    except:
+        error = Error.Error("SINTACTICO","Error sintactico",1,1)
+        ReporteErrores.func(error)
+    
 
 parser = yacc.yacc()
 

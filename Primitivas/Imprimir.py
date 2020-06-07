@@ -1,6 +1,7 @@
 from ast.Instruccion import Instruccion
 from Reporteria.Error import Error 
 import Reporteria.ReporteErrores as ReporteErrores
+import Pantalla
 
 class Imprimir(Instruccion) :
     def __init__(self,  cad) :
@@ -15,3 +16,4 @@ class Imprimir(Instruccion) :
             return False
         else:
             print('> ', valor)
+            Pantalla.getUI().setText(valor)
