@@ -11,7 +11,7 @@ class If(Instruccion) :
         self.linea = linea
         self.columna = columna
 
-    def ejecutar(self,ent,arbol):
+    def ejecutar(self,ent,arbol,ventana,isDebug):
         resultado = self.condicion.getValorImplicito(ent,arbol)
         if(resultado == 0 or resultado == 0.0): resultado = False
         if(resultado == 1 or resultado == 1.0): resultado = True
@@ -22,7 +22,7 @@ class If(Instruccion) :
 
         if(bool(resultado)):
            # try:
-               return self.instruccionV.ejecutar(ent,arbol)
+               return self.instruccionV.ejecutar(ent,arbol,ventana,isDebug)
            # except:
            #     return False
 

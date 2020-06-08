@@ -14,23 +14,23 @@ class Etiqueta(Instruccion) :
         self.linea = linea
         self.columna = columna
 
-    def ejecutar(self,ent,arbol):
+    def ejecutar(self,ent,arbol,ventana,isDebug):
         
         salir = False
 
         for ins in self.instrucciones:
-            try:
+            #try:
                 if(isinstance(ins,Asignacion.Asignacion) or isinstance(ins,Conversion.Conversion)):
                     ins.setAmbito(self.id)
-                if(ins.ejecutar(ent,arbol) == True):
+                if(ins.ejecutar(ent,arbol,ventana,isDebug) == True):
                     return True
-            except:
-                pass
+            #except:
+            #    pass
 
         if(not salir):
             siguiente = arbol.obtenerSiguienteEtiqueta(self.id)
             if(siguiente!=None):
-                if(siguiente.ejecutar(ent,arbol) == True):
+                if(siguiente.ejecutar(ent,arbol,ventana,isDebug) == True):
                     return True
                 
         return False

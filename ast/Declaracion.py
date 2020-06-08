@@ -13,7 +13,7 @@ class Declaracion(Instruccion):
         self.puntero = puntero
         self.declarada = declarada
     
-    def ejecutar(self,ent,arbol):
+    def ejecutar(self,ent,arbol,ventana,isDebug):
         #validar si existe el simbolo dentro de la tabla
         simbolo = Simbolo(self.id,self.valor,self.linea,self.columna,self.puntero,self.declarada)
 

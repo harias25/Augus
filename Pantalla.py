@@ -356,8 +356,8 @@ class Ui_MainWindow(object):
 
             declaracion1 = Declaracion.Declaracion('$ra',0,0,0,"","GLOBAL")
             declaracion2 = Declaracion.Declaracion('$sp',0,0,0,"","GLOBAL")
-            declaracion1.ejecutar(ts_global,ast)
-            declaracion2.ejecutar(ts_global,ast)
+            declaracion1.ejecutar(ts_global,ast,self,True)
+            declaracion2.ejecutar(ts_global,ast,self,True)
 
             bandera = False
             if(instrucciones != None):
@@ -397,8 +397,8 @@ class Ui_MainWindow(object):
 
         declaracion1 = Declaracion.Declaracion('$ra',0,0,0,"","GLOBAL")
         declaracion2 = Declaracion.Declaracion('$sp',0,0,0,"","GLOBAL")
-        declaracion1.ejecutar(ts_global,ast)
-        declaracion2.ejecutar(ts_global,ast)
+        declaracion1.ejecutar(ts_global,ast,self,False)
+        declaracion2.ejecutar(ts_global,ast,self,False)
 
 
         #PRIMERA PASADA PARA GUARDAR TODAS LAS ETIQUETAS
@@ -429,7 +429,7 @@ class Ui_MainWindow(object):
                     if(isinstance(ins,Asignacion.Asignacion) or isinstance(ins,Conversion.Conversion)):
                         ins.setAmbito("main")
 
-                    if(ins.ejecutar(ts_global,ast) == True):
+                    if(ins.ejecutar(ts_global,ast,self,False) == True):
                         salir = True
                         break
                 #except:
@@ -437,7 +437,7 @@ class Ui_MainWindow(object):
             if(not salir):   
                 siguiente = ast.obtenerSiguienteEtiqueta("main")
                 if(siguiente!=None):
-                    siguiente.ejecutar(ts_global,ast)
+                    siguiente.ejecutar(ts_global,ast,self,False)
         else:
             error = Error.Error("SEMANTICO","Error semantico, No puede iniciarse el programa ya que no existe la etiqueta main:",0,0)
             ReporteErrores.func(error)
@@ -477,7 +477,7 @@ class Ui_MainWindow(object):
                     self.__editor.setFocus()
                     if(isinstance(ins,Asignacion.Asignacion) or isinstance(ins,Conversion.Conversion)):
                         ins.setAmbito("main")
-                        if(ins.ejecutar(self.ts_global,self.ast) == True):
+                        if(ins.ejecutar(self.ts_global,self.ast,self,True) == True):
                             salir = True
                             break
                     
@@ -489,7 +489,7 @@ class Ui_MainWindow(object):
             if(not salir):   
                 siguiente = self.ast.obtenerSiguienteEtiqueta("main")
                 if(siguiente!=None):
-                    siguiente.ejecutar(self.ts_global,self.ast)
+                    siguiente.ejecutar(self.ts_global,self.ast,self,True)
         else:
             error = Error.Error("SEMANTICO","Error semantico, No puede iniciarse el programa ya que no existe la etiqueta main:",0,0)
             ReporteErrores.func(error)

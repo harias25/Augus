@@ -10,7 +10,7 @@ class Unset(Instruccion) :
         self.linea = linea
         self.columna = columna
 
-    def ejecutar(self,ent,arbol):
+    def ejecutar(self,ent,arbol,ventana,isDebug):
         simbolo = ent.obtener(str(self.id)) 
         if(simbolo == None):
             error = Error("SEMANTICO","Error semantico, El identificador "+str(self.id)+" no existe!!",self.linea,self.columna)

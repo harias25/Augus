@@ -18,7 +18,7 @@ class Conversion(Instruccion):
     def setAmbito(self,ambito):
         self.declarada = ambito
 
-    def ejecutar(self,ent,arbol):
+    def ejecutar(self,ent,arbol,ventana,isDebug):
         value = self.valor.getValorImplicito(ent,arbol) 
 
         if(isinstance(value,dict)):
@@ -59,6 +59,6 @@ class Conversion(Instruccion):
         primitivo = Primitivo(value,self.linea,self.columna)
         asignacion = Asignacion(self.id,primitivo,self.linea,self.columna,False)
         asignacion.setAmbito(self.declarada)
-        asignacion.ejecutar(ent,arbol)
+        asignacion.ejecutar(ent,arbol,ventana,isDebug)
 
         return False

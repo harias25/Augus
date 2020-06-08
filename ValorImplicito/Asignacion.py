@@ -14,7 +14,7 @@ class Asignacion(Instruccion):
     def setAmbito(self,ambito):
         self.declarada = ambito
 
-    def ejecutar(self,ent,arbol):
+    def ejecutar(self,ent,arbol,ventana,isDebug):
 
         simbolo = ent.obtener(str(self.id))
         value = {}
@@ -24,7 +24,7 @@ class Asignacion(Instruccion):
         if(self.puntero==False):
             if(simbolo == None):
                 declarar = Declaracion(str(self.id),value,self.linea,self.columna,"",self.declarada)
-                declarar.ejecutar(ent,arbol)
+                declarar.ejecutar(ent,arbol,ventana,isDebug)
             else:
                 if(simbolo.puntero != ""):
                     simboloP = ent.obtener(str(simbolo.puntero))
@@ -39,7 +39,7 @@ class Asignacion(Instruccion):
                 simboloP.punteros.append(self.id)
                 if(simbolo == None):
                     declarar = Declaracion(str(self.id),self.valor,self.linea,self.columna,self.valor.valor,self.declarada)
-                    declarar.ejecutar(ent,arbol)
+                    declarar.ejecutar(ent,arbol,ventana,isDebug)
                 else:
                     simbolo.valor = self.valor
                     ent.reemplazar(simbolo)

@@ -8,7 +8,7 @@ class Imprimir(Instruccion) :
         self.linea = linea
         self.columna = columna
 
-    def ejecutar(self,ent,arbol):
+    def ejecutar(self,ent,arbol,ventana,isDebug):
         valor = self.cad.getValorImplicito(ent,arbol)
         if(isinstance(valor,dict)):
             error = Error("SEMANTICO","Error semantico, no es posible imprimir un Array!!",0,1)
@@ -17,3 +17,4 @@ class Imprimir(Instruccion) :
             return False
         else:
             print('> ', valor)
+            ventana.consola.setText(str(valor))

@@ -14,7 +14,7 @@ class AccesoLista(Expresion,Instruccion):
         self.asignacion     = valor
         self.defArray       = DefArray
     
-    def ejecutar(self,ent,arbol):
+    def ejecutar(self,ent,arbol,ventana,isDebug):
         simbolo = ent.obtener(str(self.id))
         if(simbolo == None):
             error = Error("SEMANTICO","Error semantico, No existe la variable con identificador "+self.id,self.linea,self.columna)
@@ -62,7 +62,7 @@ class AccesoLista(Expresion,Instruccion):
                         valorIdentificador = valorIdentificador + valorAgregar
 
                     asignar = Asignacion(self.id,Primitivo(valorIdentificador,0,0),self.linea,self.columna,False)
-                    asignar.ejecutar(ent,arbol)
+                    asignar.ejecutar(ent,arbol,ventana,isDebug)
                 else:
                     error = Error("SEMANTICO","Error semantico, Llave no valida para asingar caracteres de una cadena",self.linea,self.columna)
                     ReporteErrores.func(error)
@@ -71,7 +71,7 @@ class AccesoLista(Expresion,Instruccion):
                 valorFinal = self.asignarValorEnArray(ent,valorIdentificador,valorAgregar,1)
                 if(valorFinal == None): return False
                 asignar = Asignacion(self.id,Primitivo(valorIdentificador,0,0),self.linea,self.columna,False)
-                asignar.ejecutar(ent,arbol)
+                asignar.ejecutar(ent,arbol,ventana,isDebug)
             else:
                 error = Error("SEMANTICO","Error semantico, el valor del acceso no es de tipo CADENA O ARRAY",self.linea,self.columna)
                 ReporteErrores.func(error)
