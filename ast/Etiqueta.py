@@ -6,6 +6,11 @@ import Condicionales.If as If
 import ast.GoTo as GoTo
 import ValorImplicito.Asignacion as Asignacion
 import ValorImplicito.Conversion as Conversion
+import time
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.Qsci import *
 
 class Etiqueta(Instruccion) :
     def __init__(self,  id, instrucciones,linea,columna) :
@@ -17,13 +22,35 @@ class Etiqueta(Instruccion) :
     def ejecutar(self,ent,arbol,ventana,isDebug):
         
         salir = False
+        if(isDebug):
+            QApplication.processEvents()
+            ventana.editor.setCursorPosition(self.linea - 1,0)
+            ventana.editor.setFocus()
+            time.sleep(1)
 
         for ins in self.instrucciones:
             #try:
+                QApplication.processEvents()
+                if(isDebug):
+                    ventana.editor.setCursorPosition(ins.linea-1,0)
+                    ventana.editor.setFocus()
+                    time.sleep(1)
+
                 if(isinstance(ins,Asignacion.Asignacion) or isinstance(ins,Conversion.Conversion)):
                     ins.setAmbito(self.id)
                 if(ins.ejecutar(ent,arbol,ventana,isDebug) == True):
                     return True
+
+                if(isDebug):
+                    contador = 1
+                    for key in ent.tabla:
+                        QApplication.processEvents()
+                        s = ent.tabla[key]
+                        ventana.tableWidget.setItem(contador,0, QTableWidgetItem(str(contador)))
+                        ventana.tableWidget.setItem(contador,1, QTableWidgetItem(s.id))
+                        ventana.tableWidget.setItem(contador, 2 , QTableWidgetItem(str(s.valor)))
+                        contador = contador + 1 
+
             #except:
             #    pass
 

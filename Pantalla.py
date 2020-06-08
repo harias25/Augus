@@ -121,7 +121,7 @@ class MyLexer(QsciLexerCustom):
                 else:
                     # Default style
                     self.setStyling(token[1], 0)
-
+    
 class Ui_MainWindow(object):
 
     resultChanged = QtCore.pyqtSignal(str)
@@ -138,7 +138,7 @@ class Ui_MainWindow(object):
         self.frameCodigo.setObjectName("frameCodigo")
         self.scrollDebug = QtWidgets.QScrollArea(self.centralwidget)
         self.scrollDebug.setGeometry(QtCore.QRect(660, 30, 341, 471))
-        self.scrollDebug.setWidgetResizable(True)
+        self.scrollDebug.setWidgetResizable(False)
         self.scrollDebug.setObjectName("scrollDebug")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
         self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 339, 469))
@@ -155,7 +155,7 @@ class Ui_MainWindow(object):
         self.frameConsola.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frameConsola.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frameConsola.setObjectName("frameConsola")
-        self.consola = QtWidgets.QLabel(self.frameConsola)
+        self.consola = QtWidgets.QPlainTextEdit(self.frameConsola)
         self.consola.setGeometry(QtCore.QRect(10, 0, 991, 211))
         font = QtGui.QFont()
         font.setFamily("Consolas")
@@ -165,7 +165,7 @@ class Ui_MainWindow(object):
         font.setKerning(True)
         self.consola.setFont(font)
         self.consola.setAutoFillBackground(False)
-        self.consola.setTextFormat(QtCore.Qt.RichText)
+        #self.consola.setTextFormat(QtCore.Qt.RichText)
         self.consola.setObjectName("consola")
         self.frame = QtWidgets.QFrame(self.centralwidget)
         self.frame.setGeometry(QtCore.QRect(-1, 0, 1001, 31))
@@ -249,45 +249,45 @@ class Ui_MainWindow(object):
         self.__myFont = QFont()
         self.__myFont.setPointSize(12)
         #************************************************ REGLAS DEL LENGUAJE AUGUS *****************************************
-        self.__editor = QsciScintilla()
-        self.__editor.setText("")              
-        self.__editor.setLexer(None)           
-        self.__editor.setUtf8(True)             
-        self.__editor.setFont(self.__myFont)    
+        self.editor = QsciScintilla()
+        self.editor.setText("")              
+        self.editor.setLexer(None)           
+        self.editor.setUtf8(True)             
+        self.editor.setFont(self.__myFont)    
 
         #AJUSTES DE TEXTO
-        self.__editor.setWrapMode(QsciScintilla.WrapWord)
-        self.__editor.setWrapVisualFlags(QsciScintilla.WrapFlagByText)
-        self.__editor.setWrapIndentMode(QsciScintilla.WrapIndentIndented)
+        self.editor.setWrapMode(QsciScintilla.WrapWord)
+        self.editor.setWrapVisualFlags(QsciScintilla.WrapFlagByText)
+        self.editor.setWrapIndentMode(QsciScintilla.WrapIndentIndented)
 
         #FIN DE LINEA
-        self.__editor.setEolMode(QsciScintilla.EolWindows)
-        self.__editor.setEolVisibility(False)
+        self.editor.setEolMode(QsciScintilla.EolWindows)
+        self.editor.setEolVisibility(False)
 
         #SANGRIA
-        self.__editor.setIndentationsUseTabs(False)
-        self.__editor.setTabWidth(4)
-        self.__editor.setIndentationGuides(True)
-        self.__editor.setTabIndents(True)
-        self.__editor.setAutoIndent(True)
+        self.editor.setIndentationsUseTabs(False)
+        self.editor.setTabWidth(4)
+        self.editor.setIndentationGuides(True)
+        self.editor.setTabIndents(True)
+        self.editor.setAutoIndent(True)
 
-        self.__editor.setCaretForegroundColor(QColor("#ff0000ff"))
-        self.__editor.setCaretLineVisible(True)
-        self.__editor.setCaretLineBackgroundColor(QColor("#1f0000ff"))
-        self.__editor.setCaretWidth(2)
+        self.editor.setCaretForegroundColor(QColor("#ff0000ff"))
+        self.editor.setCaretLineVisible(True)
+        self.editor.setCaretLineBackgroundColor(QColor("#1f0000ff"))
+        self.editor.setCaretWidth(2)
 
         # MARGENES
-        self.__editor.setMarginType(0, QsciScintilla.NumberMargin)
-        self.__editor.setMarginWidth(0, "0000")  #con este se puede quitar la linea
-        self.__editor.setMarginsForegroundColor(QColor("#ff888888"))
+        self.editor.setMarginType(0, QsciScintilla.NumberMargin)
+        self.editor.setMarginWidth(0, "0000")  #con este se puede quitar la linea
+        self.editor.setMarginsForegroundColor(QColor("#ff888888"))
 
         #SE COLOCAN LAS REGLAS DEL EDITOR
-        self.__lexer = MyLexer(self.__editor)
-        self.__editor.setLexer(self.__lexer)
+        self.__lexer = MyLexer(self.editor)
+        self.editor.setLexer(self.__lexer)
 
         self.__lyt = QVBoxLayout()
         self.frameCodigo.setLayout(self.__lyt)
-        self.__lyt.addWidget(self.__editor)
+        self.__lyt.addWidget(self.editor)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -322,7 +322,7 @@ class Ui_MainWindow(object):
         self.tableWidget.setColumnWidth(2, 175)
 
         self.consola.setStyleSheet("background-color: black;border: 1px solid black;color:green;") 
-        self.consola.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        #self.consola.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
 
 
     def setTexto(self,texto):
@@ -346,10 +346,18 @@ class Ui_MainWindow(object):
         reporteGramatical.generarReporte(listado[0])
 
     def debugger(self):
+        self.tableWidget.setRowCount(0)
+        self.tableWidget.setRowCount(100)
+        self.tableWidget.setItem(0,0, QTableWidgetItem("No."))
+        self.tableWidget.setItem(0,1, QTableWidgetItem("Simbolo"))
+        self.tableWidget.setItem(0, 2 , QTableWidgetItem("Valor"))
+
+
+
         if(self.hilo_terminado):
             sys.setrecursionlimit(10**9)
-            g.textoEntrada = self.__editor.text()
-            instrucciones = g.parse(self.__editor.text())
+            g.textoEntrada = self.editor.text()
+            instrucciones = g.parse(self.editor.text())
             self.instrucciones = instrucciones
             ts_global = TS.Entorno(None)
             ast = AST.AST(instrucciones) 
@@ -380,16 +388,13 @@ class Ui_MainWindow(object):
             self.ast = ast
             self.listado_gramatical = g.func(1,None).copy()
 
-            hilo1 =threading.Thread(target=self.debug)
-            hilo1.start()
-            hilo2 =threading.Thread(target=self.tabla)
-            hilo2.start()
+            self.debug()
 
     def ascendente(self):
         sys.setrecursionlimit(10**9)
-        g.textoEntrada = self.__editor.text()
+        g.textoEntrada = self.editor.text()
 
-        instrucciones = g.parse(self.__editor.text())
+        instrucciones = g.parse(self.editor.text())
         self.instrucciones = instrucciones
         ts_global = TS.Entorno(None)
         ts_global.asignarConsola(self.consola)
@@ -450,41 +455,38 @@ class Ui_MainWindow(object):
         self.ast = ast
         self.listado_gramatical = g.func(1,None).copy()
 
-    def tabla(self):
-        
-        while(not self.hilo_terminado):
-            contador = 1
-            diccionario = self.ts_global.tabla.copy()
-            for key in diccionario:
-                s = diccionario[key]
-                self.tableWidget.setItem(contador,0, QTableWidgetItem(str(contador)))
-                self.tableWidget.setItem(contador,1, QTableWidgetItem(s.id))
-                self.tableWidget.setItem(contador, 2 , QTableWidgetItem(str(s.valor)))
-                contador = contador + 1 
-
     def debug(self):
         self.hilo_terminado = False
         main = self.ast.obtenerEtiqueta("main")
 
         if(main != None):
             salir = False
-            self.__editor.setCursorPosition(0,0)
-            self.__editor.setFocus()
+            self.editor.setCursorPosition(0,0)
+            self.editor.setFocus()
             time.sleep(2)
             for ins in main.instrucciones:
-                #try:
-                    self.__editor.setCursorPosition(ins.linea-1,0)
-                    self.__editor.setFocus()
+                QApplication.processEvents()
+                try:
+                    self.editor.setCursorPosition(ins.linea-1,0)
+                    self.editor.setFocus()
+                    time.sleep(2)
                     if(isinstance(ins,Asignacion.Asignacion) or isinstance(ins,Conversion.Conversion)):
                         ins.setAmbito("main")
-                        if(ins.ejecutar(self.ts_global,self.ast,self,True) == True):
-                            salir = True
-                            break
+                    if(ins.ejecutar(self.ts_global,self.ast,self,True) == True):
+                        salir = True
+                        break
+                    
+                    contador = 1
+                    for key in self.ts_global.tabla:
+                        s = self.ts_global.tabla[key]
+                        self.tableWidget.setItem(contador,0, QTableWidgetItem(str(contador)))
+                        self.tableWidget.setItem(contador,1, QTableWidgetItem(s.id))
+                        self.tableWidget.setItem(contador, 2 , QTableWidgetItem(str(s.valor)))
+                        contador = contador + 1 
                     
                     
-                    time.sleep(2)
-                #except:
-                #    pass
+                except:
+                    pass
             
             if(not salir):   
                 siguiente = self.ast.obtenerSiguienteEtiqueta("main")
@@ -493,19 +495,18 @@ class Ui_MainWindow(object):
         else:
             error = Error.Error("SEMANTICO","Error semantico, No puede iniciarse el programa ya que no existe la etiqueta main:",0,0)
             ReporteErrores.func(error)
-
         listado = ReporteErrores.func(None)
         if(len(listado)>0):
             QMessageBox.critical(self.centralwidget, "Errores en Ejecución", "Se obtuvieron errores en la ejecución del Código Ingresado, verifique reporte de Errores")
         self.hilo_terminado = True
-        print ("Terminado hilo ")
+        #print ("Terminado hilo ")
 
     def exit(self):
         sys.exit()
 
     def clear(self):
         self.ruta_archivo = None
-        self.__editor.setText("")
+        self.editor.setText("")
 
     def open(self):
         root = tk.Tk()
@@ -515,7 +516,7 @@ class Ui_MainWindow(object):
         try:
             f = open(ruta,"r")
             input = f.read()
-            self.__editor.setText(input)
+            self.editor.setText(input)
             f.close()
             self.ruta_archivo = ruta
         except Exception as e:
@@ -532,7 +533,7 @@ class Ui_MainWindow(object):
         if not ruta: return
         try:
             f = open(ruta,"w")
-            f.write(self.__editor.text())
+            f.write(self.editor.text())
             f.close()
         except Exception as e:
             raise
@@ -543,7 +544,7 @@ class Ui_MainWindow(object):
         if not ruta: return
         try:
             f = open(ruta,"w")
-            f.write(self.__editor.text())
+            f.write(self.editor.text())
             f.close()
             self.ruta_archivo = ruta
         except Exception as e:
@@ -553,7 +554,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "IDE AUGUS - HAROLDO PABLO ARIAS MOLINA - 201020247"))
-        self.consola.setText(_translate("MainWindow", ""))
+        #self.consola.setText(_translate("MainWindow", ""))
         self.menuArchivo.setTitle(_translate("MainWindow", "Archivo"))
         self.menuPrograma.setTitle(_translate("MainWindow", "Programa"))
         self.menuReportes.setTitle(_translate("MainWindow", "Reportes"))

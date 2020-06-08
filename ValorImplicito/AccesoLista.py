@@ -9,8 +9,8 @@ class AccesoLista(Expresion,Instruccion):
     def __init__(self,id,llaves,valor,linea,columna,DefArray):
         self.id             = id    
         self.llaves         = llaves  
-        self.linea          = str(linea)
-        self.columna        = str(columna)
+        self.linea          = linea
+        self.columna        = columna
         self.asignacion     = valor
         self.defArray       = DefArray
     

@@ -15,6 +15,21 @@ class Imprimir(Instruccion) :
             ReporteErrores.func(error)
         elif(valor == None):
             return False
+        elif(str(valor) == "\n"):
+            print('> ', "")
+            ventana.consola.appendPlainText("")
         else:
             print('> ', valor)
-            ventana.consola.setText(str(valor))
+            cadenas = str(valor).split("\\n")
+            
+            if(len(cadenas) == 1):
+                 ventana.consola.insertPlainText(str(valor))
+            else:
+                contador = 1
+                for value in cadenas:
+                    ventana.consola.insertPlainText(str(value))
+                    if(contador < len(cadenas)):
+                        ventana.consola.appendPlainText("")
+                    contador = contador + 1
+
+           
