@@ -17,15 +17,14 @@
 - QScintilla para la creación del TextBox con el formato del código
 
 ## Comando de Herramientas utilizadas
--- pip install pyqt5 --no-cache-dir
--- pip install qscintilla --no-cache-dir
+- pip install pyqt5 --no-cache-dir
+- pip install qscintilla --no-cache-dir
 
-## Ejecución del Proyecto
-- Generar los archivos de los analizadores
--- python .\ascendente.py
--- python .\descendente.py
+## Generación de Archivos de Analizadores
+-python .\ascendente.py
+- python .\descendente.py
 
-- Ejecutar el Programa Funcional
--- python .\Pantalla.py
+## Ejecutar el Programa Funcional
+- python .\Pantalla.py
 
 
