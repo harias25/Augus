@@ -15,6 +15,17 @@
 - Graphviz: Es una herramienta para realizar graficas, se utiliza para mostrar el AST, se requiere que bin de Graphviz este configurado en el path de windows o ubuntu.
 - PyQt5 para la creación y administración de la interfaz gráfica, se debe de configurar previamente, depende la instalación del sistema operativo.
 - QScintilla para la creación del TextBox con el formato del código
-### pip install pyqt5 --no-cache-dir
-### pip install qscintilla --no-cache-dir
-    
+
+## Comando de Herramientas utilizadas
+-- pip install pyqt5 --no-cache-dir
+-- pip install qscintilla --no-cache-dir
+
+## Ejecución del Proyecto
+- Generar los archivos de los analizadores
+-- python .\ascendente.py
+-- python .\descendente.py
+
+- Ejecutar el Programa Funcional
+-- python .\Pantalla.py
+
+
