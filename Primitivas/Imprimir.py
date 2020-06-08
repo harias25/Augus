@@ -1,11 +1,12 @@
 from ast.Instruccion import Instruccion
 from Reporteria.Error import Error 
 import Reporteria.ReporteErrores as ReporteErrores
-import Pantalla
-
+                        
 class Imprimir(Instruccion) :
-    def __init__(self,  cad) :
+    def __init__(self,cad,linea,columna):
         self.cad = cad
+        self.linea = linea
+        self.columna = columna
 
     def ejecutar(self,ent,arbol):
         valor = self.cad.getValorImplicito(ent,arbol)
@@ -16,4 +17,3 @@ class Imprimir(Instruccion) :
             return False
         else:
             print('> ', valor)
-            Pantalla.getUI().setText(valor)

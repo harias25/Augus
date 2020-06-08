@@ -122,24 +122,9 @@ class MyLexer(QsciLexerCustom):
                     # Default style
                     self.setStyling(token[1], 0)
 
-    hilo_terminado = False
-    def debug(self):
-        global hilo_terminado
-        texto = str(self.__editor.text())
-        lineas = texto.splitlines()
-
-        contador = 0
-        for linea in lineas:
-            print(linea)
-            self.__editor.setCursorPosition(contador,0)
-            self.__editor.setFocus()
-            time.sleep(1)
-            contador = contador +1
-        
-        hilo_terminado = True
-        print ("Terminado hilo ")
-
 class Ui_MainWindow(object):
+
+    resultChanged = QtCore.pyqtSignal(str)
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -339,7 +324,7 @@ class Ui_MainWindow(object):
         self.consola.setStyleSheet("background-color: black;border: 1px solid black;color:green;") 
         self.consola.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
 
-    
+
     def setTexto(self,texto):
         self.consola.setText(self.consola.text() + texto)
 
@@ -374,12 +359,36 @@ class Ui_MainWindow(object):
             declaracion1.ejecutar(ts_global,ast)
             declaracion2.ejecutar(ts_global,ast)
 
+            bandera = False
+            if(instrucciones != None):
+                for ins in instrucciones:
+                    try:
+                        if(bandera == False and ins.id != "main"):
+                            error = Error.Error("SEMANTICO","Error semantico, La primera etiqueta debe ser la etiqueta main:",ins.linea,ins.columna)
+                            ReporteErrores.func(error)
+                            break
+                        else:
+                            bandera = True
+                        if(ast.existeEtiqueta(ins)):
+                            error = Error.Error("SEMANTICO","Error semantico, Ya existe la etiqueta "+ins.id,ins.linea,ins.columna)
+                            ReporteErrores.func(error)
+                        else:
+                            ast.agregarEtiqueta(ins)
+                    except:
+                            pass
+            self.ts_global = ts_global
+            self.ast = ast
+            self.listado_gramatical = g.func(1,None).copy()
+
             hilo1 =threading.Thread(target=self.debug)
             hilo1.start()
+            hilo2 =threading.Thread(target=self.tabla)
+            hilo2.start()
 
     def ascendente(self):
         sys.setrecursionlimit(10**9)
         g.textoEntrada = self.__editor.text()
+
         instrucciones = g.parse(self.__editor.text())
         self.instrucciones = instrucciones
         ts_global = TS.Entorno(None)
@@ -441,19 +450,54 @@ class Ui_MainWindow(object):
         self.ast = ast
         self.listado_gramatical = g.func(1,None).copy()
 
+    def tabla(self):
+        
+        while(not self.hilo_terminado):
+            contador = 1
+            diccionario = self.ts_global.tabla.copy()
+            for key in diccionario:
+                s = diccionario[key]
+                self.tableWidget.setItem(contador,0, QTableWidgetItem(str(contador)))
+                self.tableWidget.setItem(contador,1, QTableWidgetItem(s.id))
+                self.tableWidget.setItem(contador, 2 , QTableWidgetItem(str(s.valor)))
+                contador = contador + 1 
+
     def debug(self):
         self.hilo_terminado = False
-        texto = str(self.__editor.text())
-        lineas = texto.splitlines()
-        contador = 0
-        for linea in lineas:
-            print(linea)
-            self.__editor.setCursorPosition(contador,0)
+        main = self.ast.obtenerEtiqueta("main")
+
+        if(main != None):
+            salir = False
+            self.__editor.setCursorPosition(0,0)
             self.__editor.setFocus()
-            time.sleep(1)
-            contador = contador +1
-        
-        hilo_terminado = True
+            time.sleep(2)
+            for ins in main.instrucciones:
+                #try:
+                    self.__editor.setCursorPosition(ins.linea-1,0)
+                    self.__editor.setFocus()
+                    if(isinstance(ins,Asignacion.Asignacion) or isinstance(ins,Conversion.Conversion)):
+                        ins.setAmbito("main")
+                        if(ins.ejecutar(self.ts_global,self.ast) == True):
+                            salir = True
+                            break
+                    
+                    
+                    time.sleep(2)
+                #except:
+                #    pass
+            
+            if(not salir):   
+                siguiente = self.ast.obtenerSiguienteEtiqueta("main")
+                if(siguiente!=None):
+                    siguiente.ejecutar(self.ts_global,self.ast)
+        else:
+            error = Error.Error("SEMANTICO","Error semantico, No puede iniciarse el programa ya que no existe la etiqueta main:",0,0)
+            ReporteErrores.func(error)
+
+        listado = ReporteErrores.func(None)
+        if(len(listado)>0):
+            QMessageBox.critical(self.centralwidget, "Errores en Ejecución", "Se obtuvieron errores en la ejecución del Código Ingresado, verifique reporte de Errores")
+        self.hilo_terminado = True
         print ("Terminado hilo ")
 
     def exit(self):

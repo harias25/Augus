@@ -179,8 +179,8 @@ def t_COMENTARIO_SIMPLE(t):
 t_ignore = " \t\r"
 
 def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += t.value.count("\n")
+     r'\n+'
+     t.lexer.lineno += t.value.count("\n")
     
 def t_error(t):
     error = Error.Error("LEXICO","Error lexico, Caracter "+t.value[0]+" no es valido.",t.lexer.lineno,find_column(t))
@@ -258,13 +258,13 @@ def p_empty(t) :
 def p_etiqueta(t) :
     'etiqueta    : ID DOSP instrucciones '
     lista = func(1,None).copy()
-    t[0] = Etiqueta(t[1],t[3],t.lexer.lineno,find_column(t.slice[1]))
+    t[0] = Etiqueta(t[1],t[3],t.slice[1].lineno,find_column(t.slice[1]))
     gramatical = G.ValorAscendente('etiqueta -> ID DOSP instrucciones','etiqueta.instrucciones.lista = []; </hr> etiqueta.instrucciones.lista = instrucciones.lista;',lista)
     func(0,gramatical)
 
 def p_etiqueta_e(t) :
     'etiqueta    : ID DOSP empty '
-    t[0] = Etiqueta(t[1],t[3],t.lexer.lineno,find_column(t.slice[1]))    
+    t[0] = Etiqueta(t[1],t[3],t.slice[1].lineno,find_column(t.slice[1]))    
     gramatical = G.ValorAscendente('etiqueta -> ID DOSP','etiqueta.instrucciones.lista = [];',[])
     func(2,gramatical)#func(2,gramatical)
 #********************************************** INSTRUCCIONES  ***********************************
@@ -303,15 +303,15 @@ def p_instruccion(t) :
 def p_instruccion_imprimir(t) :
     'imprimir_instr     : IMPRIMIR PARIZQ tipo_var PARDER PTCOMA'
     op = Operacion()
-    op.Indentficador(t[3],t.lexer.lineno,find_column(t.slice[2]))
-    t[0] =Imprimir(op)
+    op.Indentficador(t[3],t.slice[1].lineno,find_column(t.slice[2]))
+    t[0] =Imprimir(op,t.slice[1].lineno,find_column(t.slice[1]))
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('imprimir_instr ->IMPRIMIR PARIZQ tipo_var  PARDER PTCOMA','imprimir_instr.instr = Print(tipo_var.val);',lista)
     func(0,gramatical)
 
 def p_instruccion_imprimir_acceso(t) :
     'imprimir_instr     : IMPRIMIR PARIZQ acceso_lista PARDER PTCOMA'
-    t[0] =Imprimir(t[3])
+    t[0] =Imprimir(t[3],t.slice[1].lineno,find_column(t.slice[1]))
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('imprimir_instr ->IMPRIMIR PARIZQ acceso_lista  PARDER PTCOMA','imprimir_instr.instr = Print(acceso_lista.val);',lista)
     func(0,gramatical)
@@ -320,8 +320,8 @@ def p_instruccion_imprimir_cadena(t) :
     '''imprimir_instr     : IMPRIMIR PARIZQ CADENA  PARDER PTCOMA
                           | IMPRIMIR PARIZQ CADENA2 PARDER PTCOMA'''
     op = Operacion()
-    op.Primitivo(Primitivo(t[3],t.lexer.lineno,0))
-    t[0] = Imprimir(op)
+    op.Primitivo(Primitivo(t[3],t.slice[1].lineno,0))
+    t[0] = Imprimir(op,t.slice[1].lineno,find_column(t.slice[1]))
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('imprimir_instr ->IMPRIMIR PARIZQ CADENA  PARDER PTCOMA','imprimir_instr.instr = Print(CADENA);',lista)
     func(0,gramatical)
@@ -342,20 +342,20 @@ def p_expresion(t):
 #********************************************** INSTRUCCIONES PRIMITIVAS ***********************************
 def p_go_to(t):
     'go_to : GOTO ID PTCOMA'
-    t[0] = GoTo(t[2],t.lexer.lineno,find_column(t.slice[1]))
+    t[0] = GoTo(t[2],t.slice[1].lineno,find_column(t.slice[1]))
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('go_to ->GOTO ID PTCOMA','go_to.instr = GoTO(ID);',lista)
     func(0,gramatical)
     
 def p_if(t):
     'if_instruccion : IF PARIZQ expresion PARDER go_to '
-    t[0] = If(t[3],t[5],t.lexer.lineno,find_column(t.slice[1]))
+    t[0] = If(t[3],t[5],t.slice[1].lineno,find_column(t.slice[1]))
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('if_instruccion -> IF PARIZQ expresion PARDER go_to','if_instruccion.instr = If(expresion.val,go_to.instr);',lista)
     func(0,gramatical)
 def p_exit(t):
     'exit : EXIT PTCOMA'
-    t[0] = Exit(t.lexer.lineno,find_column(t.slice[1]))
+    t[0] = Exit(t.slice[1].lineno,find_column(t.slice[1]))
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('exit -> EXIT PTCOMA','exit.instr = Exit();',lista)
     func(0,gramatical)
@@ -364,21 +364,21 @@ def p_unset(t):
              | UNSET PARIZQ PARAM PARDER PTCOMA
              | UNSET PARIZQ RET PARDER PTCOMA
              | UNSET PARIZQ PILA PARDER PTCOMA'''
-    t[0] = Unset(t[3],t.lexer.lineno,find_column(t.slice[1]))
+    t[0] = Unset(t[3],t.slice[1].lineno,find_column(t.slice[1]))
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('unset -> UNSET PARIZQ tipo_var PARDER PTCOMA','unset.instr = Unset(tipo_var.val);',lista)
     func(0,gramatical)
 #********************************************** ASIGNACIONES *********************************************
 def p_asignacion(t):
     'asignacion : tipo_var IGUAL expresion PTCOMA '
-    t[0] = Asignacion(t[1],t[3],t.lexer.lineno,1,False)
+    t[0] = Asignacion(t[1],t[3],t.slice[2].lineno,1,False)
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('asignacion -> tipo_var IGUAL expresion PTCOMA','asignacion.instr = Asignar(tipo_var.val,expresion.val);',lista)
     func(0,gramatical)
 
 def p_asingacion_array(t):
     'asignacion : tipo_var IGUAL ARRAY PARIZQ PARDER PTCOMA '
-    t[0] = Asignacion(t[1],{},t.lexer.lineno,1,False)
+    t[0] = Asignacion(t[1],{},t.slice[2].lineno,1,False)
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('asignacion -> tipo_var IGUAL ARRAY PARIZQ PARDER PTCOMA','asignacion.instr = Asignar(tipo_var.val,new Array());',lista)
     func(0,gramatical)
@@ -386,15 +386,15 @@ def p_asingacion_array(t):
 def p_puntero(t):
     'puntero : tipo_var IGUAL PAND  tipo_var PTCOMA '
     op = Operacion()
-    op.Indentficador(t[4],t.lexer.lineno,find_column(t.slice[3])+1)
-    t[0] = Asignacion(t[1],op,t.lexer.lineno,1,True)
+    op.Indentficador(t[4],t.slice[2].lineno,find_column(t.slice[3])+1)
+    t[0] = Asignacion(t[1],op,t.slice[2].lineno,1,True)
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('puntero -> tipo_var IGUAL PAND  tipo_var PTCOMA','puntero.instr = Puntero(tipo_var1.val,tipo_var2.val);',lista)
     func(0,gramatical)
     
 def p_conversiones(t):
     'conversion : tipo_var IGUAL PARIZQ tipo_dato PARDER primitiva PTCOMA '
-    t[0] = Conversion(t[1],t[6],t[4],t.lexer.lineno,1)
+    t[0] = Conversion(t[1],t[6],t[4],t.slice[2].lineno,1)
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('conversion -> tipo_var IGUAL  PARIZQ tipo_dato PARDER primitiva PTCOMA','conversion.instr = Conversion(tipo_var.val,tipo_dato.val,primitiva.val);',lista)
     func(0,gramatical)
@@ -420,7 +420,7 @@ def p_tipo_var(t):
 def p_expresion_unaria(t):
     'expresion_unaria   :   MENOS primitiva %prec UMENOS' 
     op = Operacion()
-    op.OperacionUnaria(t[2],t.lexer.lineno,find_column(t.slice[1]))
+    op.OperacionUnaria(t[2],t.slice[1].lineno,find_column(t.slice[1]))
     t[0] = op
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('expresion_unaria ->  MENOS primitiva %prec UMENOS','expresion_unaria.val = -primitiva.val;',lista)
@@ -433,17 +433,17 @@ def p_expresion_logica(t):
                           
     op = Operacion()
     if(t.slice[2].type == 'AND'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.AND,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.AND,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_logica ->  primitiva AND primitiva','expresion_logica.val = primitiva1.val && primitiva2.val;',lista)
         func(0,gramatical)
     elif(t.slice[2].type == 'OR'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.OR,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.OR,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_logica ->  primitiva OR primitiva','expresion_logica.val = primitiva1.val || primitiva2.val;',lista)
         func(0,gramatical)
     elif(t.slice[2].type == 'XOR'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.XOR,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.XOR,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_logica ->  primitiva XOR primitiva','expresion_logica.val = primitiva1.val xor primitiva2.val;',lista)
         func(0,gramatical)
@@ -452,7 +452,7 @@ def p_expresion_logica(t):
 def p_expresion_negacion(t):
     'expresion_logica   :   NOT primitiva %prec NOT' 
     op = Operacion()
-    op.OperacionNot(t[2],t.lexer.lineno,find_column(t.slice[1]))
+    op.OperacionNot(t[2],t.slice[1].lineno,find_column(t.slice[1]))
     t[0] = op    
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('expresion_logica ->  NOT primitiva %prec NOT','expresion_logica.val = !primitiva.val;',lista)
@@ -467,27 +467,27 @@ def p_expresion_bit_bit(t):
                           
     op = Operacion()
     if(t.slice[2].type == 'PAND'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.PAND,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.PAND,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_bit_bit ->  primitiva PAND primitiva','expresion_bit_bit.val = primitiva1.val & primitiva2.val;',lista)
         func(0,gramatical)
     elif(t.slice[2].type == 'BOR'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.BOR,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.BOR,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_bit_bit ->  primitiva BOR primitiva','expresion_bit_bit.val = primitiva1.val | primitiva2.val;',lista)
         func(0,gramatical)
     elif(t.slice[2].type == 'XORR'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.XORR,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.XORR,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_bit_bit ->  primitiva XORR primitiva','expresion_bit_bit.val = primitiva1.val ^ primitiva2.val;',lista)
         func(0,gramatical)
     elif(t.slice[2].type == 'SHIFTI'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.SHIFTI,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.SHIFTI,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_bit_bit ->  primitiva SHIFTI primitiva','expresion_bit_bit.val = primitiva1.val << primitiva2.val;',lista)
         func(0,gramatical)
     elif(t.slice[2].type == 'SHIFTD'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.SHIFTD,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.SHIFTD,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_bit_bit ->  primitiva SHIFTD primitiva','expresion_bit_bit.val = primitiva1.val >> primitiva2.val;',lista)
         func(0,gramatical)
@@ -496,7 +496,7 @@ def p_expresion_bit_bit(t):
 def p_expresion_negacion_bit(t):
     'expresion_bit_bit   :   NOTR primitiva %prec NOTR' 
     op = Operacion()
-    op.OperacionNotBit(t[2],t.lexer.lineno,find_column(t.slice[1]))
+    op.OperacionNotBit(t[2],t.slice[1].lineno,find_column(t.slice[1]))
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('expresion_bit_bit ->  NOTR primitiva %prec NOTR','expresion_bit_bit.val = ~primitiva.val;',lista)
     func(0,gramatical)
@@ -511,32 +511,32 @@ def p_expresion_relacional(t):
                             |   primitiva NIGUALQUE primitiva '''
     op = Operacion()
     if(t.slice[2].type == 'MENQUE'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.MENOR_QUE,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MENOR_QUE,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_relacional ->  primitiva MENOR primitiva','expresion_relacional.val = primitiva1.val < primitiva2.val;',lista)
         func(0,gramatical)
     elif(t.slice[2].type == 'MAYQUE'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.MAYOR_QUE,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MAYOR_QUE,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_relacional ->  primitiva MAYOR primitiva','expresion_relacional.val = primitiva1.val > primitiva2.val;',lista)
         func(0,gramatical)
     elif(t.slice[2].type == 'MEIQUE'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.MENOR_IGUA_QUE,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MENOR_IGUA_QUE,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_relacional ->  primitiva MENORIGUAL primitiva','expresion_relacional.val = primitiva1.val <= primitiva2.val;',lista)
         func(0,gramatical)
     elif(t.slice[2].type == 'MAIQUE'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.MAYOR_IGUA_QUE,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MAYOR_IGUA_QUE,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_relacional ->  primitiva MAYORIGUAL primitiva','expresion_relacional.val = primitiva1.val >= primitiva2.val;',lista)
         func(0,gramatical)
     elif(t.slice[2].type == 'IGUALQUE'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.IGUAL_IGUAL,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.IGUAL_IGUAL,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_relacional ->  primitiva IGUAL IGUAL primitiva','expresion_relacional.val = primitiva1.val == primitiva2.val;',lista)
         func(0,gramatical)
     elif(t.slice[2].type == 'NIGUALQUE'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.DIFERENTE_QUE,t.lexer.lineno,1)    
+        op.Operacion(t[1],t[3],TIPO_OPERACION.DIFERENTE_QUE,t.slice[2].lineno,1)    
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_relacional ->  primitiva DIFERENTE primitiva','expresion_relacional.val = primitiva1.val != primitiva2.val;',lista)
         func(0,gramatical)
@@ -551,27 +551,27 @@ def p_expresion_numerica(t):
 
     op = Operacion()
     if(t.slice[2].type == 'MAS'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.SUMA,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.SUMA,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_numerica ->  primitiva MAS primitiva','expresion_numerica.val = primitiva1.val + primitiva2.val;',lista)
         func(0,gramatical)
     elif(t.slice[2].type == 'MENOS'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.RESTA,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.RESTA,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_numerica ->  primitiva MENOS primitiva','expresion_numerica.val = primitiva1.val - primitiva2.val;',lista)
         func(0,gramatical)
     elif(t.slice[2].type == 'POR'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.MULTIPLICACION,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MULTIPLICACION,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_numerica ->  primitiva MULT primitiva','expresion_numerica.val = primitiva1.val * primitiva2.val;',lista)
         func(0,gramatical)
     elif(t.slice[2].type == 'DIVIDIDO'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.DIVISION,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.DIVISION,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_numerica ->  primitiva DIV primitiva','expresion_numerica.val = primitiva1.val / primitiva2.val;',lista)
         func(0,gramatical)
     elif(t.slice[2].type == 'RESTO'):
-        op.Operacion(t[1],t[3],TIPO_OPERACION.MODULO,t.lexer.lineno,1)
+        op.Operacion(t[1],t[3],TIPO_OPERACION.MODULO,t.slice[2].lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('expresion_numerica ->  primitiva RESTO primitiva','expresion_numerica.val = primitiva1.val % primitiva2.val;',lista)
         func(0,gramatical)
@@ -582,7 +582,7 @@ def p_expresion_numerica(t):
 def p_absoluto(t):
     'absoluto : ABS PARIZQ primitiva PARDER '
     op = Operacion()
-    op.ValorAbsoluto(t[3],t.lexer.lineno,find_column(t.slice[1]))
+    op.ValorAbsoluto(t[3],t.slice[1].lineno,find_column(t.slice[1]))
     t[0] = op
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('absoluto ->  ABS PARIZQ primitiva PARDER','absoluto.val = Math.ABS(primitiva.val);',lista)
@@ -602,19 +602,19 @@ def p_expresion_primitiva(t):
                  | acceso_lista'''
     op = Operacion()
     if(t.slice[1].type == 'CADENA' or t.slice[1].type == 'CADENA2'):
-        op.Primitivo(Primitivo(str(t[1]),t.lexer.lineno,find_column(t.slice[1])))
+        op.Primitivo(Primitivo(str(t[1]),t.slice[1].lineno,find_column(t.slice[1])))
         gramatical = G.ValorAscendente('primitiva -> CADENA','primitiva.val = str(CADENA);',None)
         func(2,gramatical)
     elif(t.slice[1].type == 'DECIMAL'):
-        op.Primitivo(Primitivo(float(t[1]),t.lexer.lineno,find_column(t.slice[1])))
+        op.Primitivo(Primitivo(float(t[1]),t.slice[1].lineno,find_column(t.slice[1])))
         gramatical = G.ValorAscendente('primitiva -> FLOAT','primitiva.val = float(FLOAT);',None)
         func(2,gramatical)
     elif(t.slice[1].type == 'ENTERO'):
-        op.Primitivo(Primitivo(int(t[1]),t.lexer.lineno,find_column(t.slice[1])))
+        op.Primitivo(Primitivo(int(t[1]),t.slice[1].lineno,find_column(t.slice[1])))
         gramatical = G.ValorAscendente('primitiva -> ENTERO','primitiva.val = int(ENTERO);',None)
         func(2,gramatical)
     elif(t.slice[1].type == 'TEMP') or (t.slice[1].type == 'PARAM') or (t.slice[1].type == 'RET') or (t.slice[1].type == 'PILA') or (t.slice[1].type == 'RA') or (t.slice[1].type == 'PUNTERO'):
-        op.Indentficador(t[1],t.lexer.lineno,find_column(t.slice[1]))
+        op.Indentficador(t[1],t.slice[1].lineno,find_column(t.slice[1]))
         gramatical = G.ValorAscendente('primitiva -> tipo_var','primitiva.val = tipo_var.val;',None)
         func(2,gramatical)
     elif(t.slice[1].type == 'acceso_lista'):
@@ -634,14 +634,14 @@ def  p_acceso_lista(t):
 
 def  p_acceso_lista_asigna(t):
     'acceso_lista_asigna : tipo_var accesos IGUAL expresion PTCOMA'
-    t[0] = AccesoLista(t[1],t[2],t[4],t.lexer.lineno,1,False)
+    t[0] = AccesoLista(t[1],t[2],t[4],t.slice[3].lineno,1,False)
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('acceso_lista_asigna ->  tipo_var accesos IGUAL ARRAY PARIZQ PARDER PTCOMA','acceso_lista_asigna.inst = AccesoLista(tipovar.val,accesos.lista,expresion.val);',lista)
     func(0,gramatical)
 
 def  p_acceso_lista_asigna_array(t):
     'acceso_lista_asigna : tipo_var accesos IGUAL ARRAY PARIZQ PARDER PTCOMA'
-    t[0] = AccesoLista(t[1],t[2],t[4],t.lexer.lineno,1,True)
+    t[0] = AccesoLista(t[1],t[2],t[4],t.slice[3].lineno,1,True)
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('acceso_lista_asigna ->  tipo_var accesos IGUAL ARRAY PARIZQ PARDER PTCOMA','acceso_lista_asigna.inst = AccesoLista(tipovar.val,accesos.lista,new Array());',lista)
     func(0,gramatical)
@@ -668,7 +668,7 @@ def  p_acceso(t):
 
 def p_error(t):
     try:
-        error = Error.Error("SINTACTICO","Error sintactico, no se esperaba el valor "+t.value,t.lexer.lineno,find_column(t))
+        error = Error.Error("SINTACTICO","Error sintactico, no se esperaba el valor "+t.value,t.lineno,find_column(t))
         ReporteErrores.func(error)
     except:
         error = Error.Error("SINTACTICO","Error sintactico",1,1)
@@ -678,4 +678,7 @@ def p_error(t):
 parser = yacc.yacc()
 
 def parse(input) :
+    global lexer
+    input = input.replace("\r","")
+    lexer = lex.lex()
     return parser.parse(input)
