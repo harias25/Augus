@@ -163,7 +163,17 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         font.setKerning(True)
-        self.consola.setFont(font)
+
+
+        font2 = QtGui.QFont()
+        font2.setFamily("Consolas")
+        font2.setPointSize(13)
+        font2.setBold(True)
+        font2.setWeight(100)
+        font2.setKerning(True)
+
+
+        self.consola.setFont(font2)
         self.consola.setAutoFillBackground(False)
         #self.consola.setTextFormat(QtCore.Qt.RichText)
         self.consola.setObjectName("consola")
@@ -282,7 +292,7 @@ class Ui_MainWindow(object):
         self.editor.setMarginsForegroundColor(QColor("#ff888888"))
 
         #SE COLOCAN LAS REGLAS DEL EDITOR
-        self.__lexer = MyLexer(self.editor)
+        self.__lexer = QsciLexerRuby(self.editor)
         self.editor.setLexer(self.__lexer)
 
         self.__lyt = QVBoxLayout()
@@ -355,7 +365,7 @@ class Ui_MainWindow(object):
 
 
         if(self.hilo_terminado):
-            sys.setrecursionlimit(10**9)
+            sys.setrecursionlimit(2147483644)
             g.textoEntrada = self.editor.text()
             instrucciones = g.parse(self.editor.text())
             self.instrucciones = instrucciones
@@ -391,7 +401,7 @@ class Ui_MainWindow(object):
             self.debug()
 
     def ascendente(self):
-        sys.setrecursionlimit(10**9)
+        sys.setrecursionlimit(2147483644)
         g.textoEntrada = self.editor.text()
 
         instrucciones = g.parse(self.editor.text())
