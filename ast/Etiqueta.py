@@ -29,7 +29,7 @@ class Etiqueta(Instruccion) :
             time.sleep(1)
 
         for ins in self.instrucciones:
-            #try:
+            try:
                 QApplication.processEvents()
                 if(isDebug):
                     ventana.editor.setCursorPosition(ins.linea-1,0)
@@ -51,8 +51,8 @@ class Etiqueta(Instruccion) :
                         ventana.tableWidget.setItem(contador, 2 , QTableWidgetItem(str(s.valor)))
                         contador = contador + 1 
 
-            #except:
-            #    pass
+            except:
+                pass
 
         if(not salir):
             siguiente = arbol.obtenerSiguienteEtiqueta(self.id)
