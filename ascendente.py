@@ -10,6 +10,7 @@ from ValorImplicito.Conversion import Conversion
 from ValorImplicito.Operacion import TIPO_OPERACION
 from ValorImplicito.Primitivo import Primitivo
 from ValorImplicito.AccesoLista import AccesoLista
+from ValorImplicito.Read import Read
 from  Primitivas.Imprimir import Imprimir
 from  Primitivas.Unset import Unset
 from  Primitivas.Exit import Exit
@@ -30,6 +31,7 @@ reservadas = {
     'unset' : 'UNSET',
     'if'	: 'IF',
 	'xor'	: 'XOR',
+    'read'  : 'READ',
     'array' : 'ARRAY'
 }
 
@@ -294,6 +296,7 @@ def p_instruccion(t) :
                         | if_instruccion
                         | conversion
                         | acceso_lista_asigna
+                        | read
                         | error '''
     t[0] = t[1]
     lista = func(1,None).copy()
@@ -369,6 +372,13 @@ def p_unset(t):
     gramatical = G.ValorAscendente('unset -> UNSET PARIZQ tipo_var PARDER PTCOMA','unset.instr = Unset(tipo_var.val);',lista)
     func(0,gramatical)
 #********************************************** ASIGNACIONES *********************************************
+def p_read(t):
+    'read : tipo_var IGUAL READ PARIZQ PARDER PTCOMA'
+    t[0] = Read(t[1],t.slice[2].lineno,1)
+    lista = func(1,None).copy()
+    gramatical = G.ValorAscendente('read -> tipo_var IGUAL read() PTCOMA','read.instr = Read(tipo_var.val);',lista)
+    func(0,gramatical)
+
 def p_asignacion(t):
     'asignacion : tipo_var IGUAL expresion PTCOMA '
     t[0] = Asignacion(t[1],t[3],t.slice[2].lineno,1,False)
