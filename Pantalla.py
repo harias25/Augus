@@ -446,15 +446,15 @@ class Ui_MainWindow(object):
         if(main != None):
             salir = False
             for ins in main.instrucciones:
-                #try:
+                try:
                     if(isinstance(ins,Asignacion.Asignacion) or isinstance(ins,Conversion.Conversion)):
                         ins.setAmbito("main")
 
                     if(ins.ejecutar(ts_global,ast,self,False) == True):
                         salir = True
                         break
-                #except:
-                #    pass
+                except:
+                    pass
             if(not salir):   
                 siguiente = ast.obtenerSiguienteEtiqueta("main")
                 if(siguiente!=None):
@@ -512,15 +512,15 @@ class Ui_MainWindow(object):
         if(main != None):
             salir = False
             for ins in main.instrucciones:
-                #try:
+                try:
                     if(isinstance(ins,Asignacion.Asignacion) or isinstance(ins,Conversion.Conversion)):
                         ins.setAmbito("main")
 
                     if(ins.ejecutar(ts_global,ast,self,False) == True):
                         salir = True
                         break
-                #except:
-                #    pass
+                except:
+                    pass
             if(not salir):   
                 siguiente = ast.obtenerSiguienteEtiqueta("main")
                 if(siguiente!=None):

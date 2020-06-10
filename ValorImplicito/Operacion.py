@@ -547,7 +547,7 @@ class Operacion(Expresion):
             return valor1 | valor2
 
         #XORR
-        elif(self.tipo == TIPO_OPERACION.XOR):
+        elif(self.tipo == TIPO_OPERACION.XORR):
             valor1 = self.operadorIzq.getValorImplicito(ent,arbol)
             valor2 = self.operadorDer.getValorImplicito(ent,arbol)
             if(isinstance(valor1,str)): valor1 = self.obtenerValorNumerico(valor1)
