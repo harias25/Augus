@@ -10,6 +10,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import tkinter as tk
 from tkinter import filedialog
 import ascendente as g
+import descendente as d
 import ast.Entorno as TS
 import ast.Instruccion as Instruccion
 import ast.GoTo as GoTo
@@ -309,6 +310,7 @@ class Ui_MainWindow(object):
         self.actionSalir.triggered.connect(self.exit)
         self.ruta_archivo  = None
         self.actionEjecutar_Ascendente.triggered.connect(self.ascendente)
+        self.actionEjecutar_Descendente.triggered.connect(self.descendente)
         self.actionTabla_de_Simbolos.triggered.connect(self.generarTabla)
         self.actionErrores.triggered.connect(self.generarRErrores)
         self.actionGramatical.triggered.connect(self.generarRGramatical)
@@ -366,6 +368,8 @@ class Ui_MainWindow(object):
 
         if(self.hilo_terminado):
             sys.setrecursionlimit(2147483644)
+            ReporteErrores.func(None,True)
+            g.func(0,None)
             g.textoEntrada = self.editor.text()
             instrucciones = g.parse(self.editor.text())
             self.instrucciones = instrucciones
@@ -400,10 +404,78 @@ class Ui_MainWindow(object):
 
             self.debug()
 
+    def descendente(self):
+        sys.setrecursionlimit(2147483644)
+        d.textoEntrada = self.editor.text()
+        d.band(1,False)
+        ReporteErrores.func(None,True)
+        d.func(0,None)
+        instrucciones = d.parse(self.editor.text())
+        self.instrucciones = instrucciones
+        ts_global = TS.Entorno(None)
+        ts_global.asignarConsola(self.consola)
+        ast = AST.AST(instrucciones) 
+
+        declaracion1 = Declaracion.Declaracion('$ra',0,0,0,"","GLOBAL")
+        declaracion2 = Declaracion.Declaracion('$sp',0,0,0,"","GLOBAL")
+        declaracion1.ejecutar(ts_global,ast,self,False)
+        declaracion2.ejecutar(ts_global,ast,self,False)
+
+
+        #PRIMERA PASADA PARA GUARDAR TODAS LAS ETIQUETAS
+        bandera = False
+        if(instrucciones != None):
+            for ins in instrucciones:
+                try:
+                    if(bandera == False and ins.id != "main"):
+                        error = Error.Error("SEMANTICO","Error semantico, La primera etiqueta debe ser la etiqueta main:",ins.linea,ins.columna)
+                        ReporteErrores.func(error)
+                        break
+                    else:
+                        bandera = True
+                    if(ast.existeEtiqueta(ins)):
+                        error = Error.Error("SEMANTICO","Error semantico, Ya existe la etiqueta "+ins.id,ins.linea,ins.columna)
+                        ReporteErrores.func(error)
+                    else:
+                        ast.agregarEtiqueta(ins)
+                except:
+                        pass
+
+        main = ast.obtenerEtiqueta("main")
+
+        if(main != None):
+            salir = False
+            for ins in main.instrucciones:
+                #try:
+                    if(isinstance(ins,Asignacion.Asignacion) or isinstance(ins,Conversion.Conversion)):
+                        ins.setAmbito("main")
+
+                    if(ins.ejecutar(ts_global,ast,self,False) == True):
+                        salir = True
+                        break
+                #except:
+                #    pass
+            if(not salir):   
+                siguiente = ast.obtenerSiguienteEtiqueta("main")
+                if(siguiente!=None):
+                    siguiente.ejecutar(ts_global,ast,self,False)
+        else:
+            error = Error.Error("SEMANTICO","Error semantico, No puede iniciarse el programa ya que no existe la etiqueta main:",0,0)
+            ReporteErrores.func(error)
+
+        listado = ReporteErrores.func(None)
+        if(len(listado)>0):
+            QMessageBox.critical(self.centralwidget, "Errores en Ejecución", "Se obtuvieron errores en la ejecución del Código Ingresado, verifique reporte de Errores")
+
+        self.ts_global = ts_global
+        self.ast = ast
+        self.listado_gramatical = d.func(1,None).copy()
+
     def ascendente(self):
         sys.setrecursionlimit(2147483644)
+        ReporteErrores.func(None,True)
         g.textoEntrada = self.editor.text()
-
+        g.func(0,None)
         instrucciones = g.parse(self.editor.text())
         self.instrucciones = instrucciones
         ts_global = TS.Entorno(None)

@@ -1,15 +1,18 @@
 import webbrowser
 
-def func(error):
+def func(error,param=False):
  
     #Declaración e inicilizacion de la variable "estática"
     if not hasattr(func,"listado"):
         func.listado = []
-        
-    if(error!=None):
-        func.listado.append(error)
+
+    if(param):
+        func.listado = []
     else:
-        return func.listado
+        if(error!=None):
+            func.listado.append(error)
+        else:
+            return func.listado
 
 
 class ReporteErrores():
