@@ -10,7 +10,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import tkinter as tk
 from tkinter import filedialog
 import ascendente as g
-import descendente as d
+import AnalizadorDescendente.descendente as d
 import ast.Entorno as TS
 import ast.Instruccion as Instruccion
 import ast.GoTo as GoTo
@@ -368,6 +368,7 @@ class Ui_MainWindow(object):
 
         if(self.hilo_terminado):
             sys.setrecursionlimit(2147483644)
+            self.consola.clear()
             ReporteErrores.func(None,True)
             g.func(0,None)
             g.textoEntrada = self.editor.text()
@@ -406,6 +407,7 @@ class Ui_MainWindow(object):
 
     def descendente(self):
         sys.setrecursionlimit(2147483644)
+        self.consola.clear()
         d.textoEntrada = self.editor.text()
         d.band(1,False)
         ReporteErrores.func(None,True)
@@ -473,6 +475,7 @@ class Ui_MainWindow(object):
 
     def ascendente(self):
         sys.setrecursionlimit(2147483644)
+        self.consola.clear()
         ReporteErrores.func(None,True)
         g.textoEntrada = self.editor.text()
         g.func(0,None)

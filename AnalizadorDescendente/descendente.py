@@ -246,7 +246,10 @@ def p_init(t) :
     t[0] = t[1]
     lista = func(1,None)
     gramatical = G.ValorAscendente('etiquetas -> epsilon','etiquetas.lista = []',[])
-    lista[0].hijos.append(gramatical)
+    try:
+        lista[0].hijos.append(gramatical)
+    except:
+        pass
 
 #********************************************** ETIQUETAS  **************************************
 def p_etiquetas_lista(t) :
