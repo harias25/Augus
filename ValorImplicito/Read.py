@@ -20,6 +20,23 @@ class Read(Instruccion):
     def setAmbito(self,ambito):
         self.declarada = ambito
 
+    def isfloat(self,x):
+        try:
+            a = float(x)
+        except ValueError:
+            return False
+        else:
+            return True
+
+    def isint(self,x):
+        try:
+            a = float(x)
+            b = int(a)
+        except ValueError:
+            return False
+        else:
+            return a == b
+
     def ejecutar(self,ent,arbol,ventana,isDebug):
 
         simbolo = ent.obtener(str(self.id))
@@ -35,10 +52,10 @@ class Read(Instruccion):
                 value = valorIngresado.replace("\n","")
                 bandera = False
         
-        if(str(value).isdecimal()):
-            value = float(value)
-        elif(str(value).isnumeric()):
+        if(self.isint(value)):
             value = int(value)
+        elif(self.isfloat(value)):
+            value = float(value)
         
         if(simbolo == None):
             declarar = Declaracion(str(self.id),value,self.linea,self.columna,"",self.declarada)
