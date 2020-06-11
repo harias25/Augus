@@ -302,7 +302,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
+        self.actionNuevo.triggered.connect(self.clean)
         self.actionArbir.triggered.connect(self.open)
         self.actionGuardar.triggered.connect(self.save)
         self.actionGuardar_Como.triggered.connect(self.save_as)
@@ -336,7 +336,11 @@ class Ui_MainWindow(object):
         self.consola.setStyleSheet("background-color: black;border: 1px solid black;color:green;") 
         #self.consola.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
 
-
+    def clean(self):
+        self.ruta_archivo = None
+        self.editor.setText("")
+        self.consola.clear()
+        
     def setTexto(self,texto):
         self.consola.setText(self.consola.text() + texto)
 
