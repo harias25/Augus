@@ -24,9 +24,9 @@
 
 ## Generación de Archivos de Analizadores
 - python .\ascendente.py
-- python .\descendente.py
+- python .\AnalizadorDescendente\descendente.py
 
 ## Ejecutar el Programa Funcional
-- python .\AnalizadorDescendente\Pantalla.py
+- python .\Pantalla.py
 
 
