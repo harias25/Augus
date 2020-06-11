@@ -23,10 +23,10 @@
 - conda install pyqt
 
 ## Generación de Archivos de Analizadores
-- python .\AnalizadorDescendente\ascendente.py
+- python .\ascendente.py
 - python .\descendente.py
 
 ## Ejecutar el Programa Funcional
-- python .\Pantalla.py
+- python .\AnalizadorDescendente\Pantalla.py
 
 
