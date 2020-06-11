@@ -9,6 +9,10 @@ class ReporteAST():
         self.contenido = ""
 
     def graficar(self,instrucciones):
+        pagina = "<html>" + '\n' + "<head>" + '\n' + "<title>Reporte de Simbolos</title>" + '\n' + "</head>" + '\n'
+        pagina = pagina + "<body bgcolor=\"black\">" + '\n' + "<center><Font size=22 color=darkred>" + "Reporte AST" + "</Font></center>" + '\n'
+        pagina = pagina + "<hr >" + '\n' + "<font color=white>" + '\n' + "<center>" + '\n'
+
         self.contenido = "digraph G {\n"
         self.contenido += "node [style=filled];\n"
         self.contenido += "S->ni [color=\"0.002 0.782 0.999\"];\n"
@@ -28,6 +32,15 @@ class ReporteAST():
 
         os.system("dot -Tpng AST.dot -o AST.png")
         os.system("DEL /F /A AST.dot")
+
+        pagina = pagina +' <img src="AST.png" alt="AST GENERADO"> ';
+
+        pagina = pagina + '\n' + "</center>" + '\n' + "</table>" + "</body>" + '\n' + "</html>"
+
+        f = open ('reporteAST.html','w')
+        f.write(contenido)
+        f.close()
+
 
     def definirEtiquetas(self,nodo,padre):
         try:
