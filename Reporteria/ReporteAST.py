@@ -2,6 +2,7 @@ import os
 import ast
 import ValorImplicito as V
 from ply.lex import LexToken
+import webbrowser
 
 class ReporteAST():
     def __init__(self):
@@ -38,9 +39,9 @@ class ReporteAST():
         pagina = pagina + '\n' + "</center>" + '\n' + "</table>" + "</body>" + '\n' + "</html>"
 
         f = open ('reporteAST.html','w')
-        f.write(contenido)
+        f.write(pagina)
         f.close()
-
+        webbrowser.open_new_tab('reporteAST.html')
 
     def definirEtiquetas(self,nodo,padre):
         try:
