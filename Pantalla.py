@@ -235,6 +235,12 @@ class Ui_MainWindow(object):
         self.actionAST.setObjectName("actionAST")
         self.actionGramatical = QtWidgets.QAction(MainWindow)
         self.actionGramatical.setObjectName("actionGramatical")
+
+        self.actionAyuda = QtWidgets.QAction(MainWindow)
+        self.actionAyuda.setObjectName("actionAyuda")
+        self.actionAcercaDe = QtWidgets.QAction(MainWindow)
+        self.actionAcercaDe.setObjectName("actionAcercaDe")
+
         self.menuArchivo.addAction(self.actionNuevo)
         self.menuArchivo.addSeparator()
         self.menuArchivo.addAction(self.actionArbir)
@@ -251,6 +257,8 @@ class Ui_MainWindow(object):
         self.menuReportes.addAction(self.actionErrores)
         self.menuReportes.addAction(self.actionAST)
         self.menuReportes.addAction(self.actionGramatical)
+        self.menuAyuda.addAction(self.actionAyuda)
+        self.menuAyuda.addAction(self.actionAcercaDe)
         self.menubar.addAction(self.menuArchivo.menuAction())
         self.menubar.addAction(self.menuPrograma.menuAction())
         self.menubar.addAction(self.menuReportes.menuAction())
@@ -315,6 +323,10 @@ class Ui_MainWindow(object):
         self.actionErrores.triggered.connect(self.generarRErrores)
         self.actionGramatical.triggered.connect(self.generarRGramatical)
         self.actionAST.triggered.connect(self.generarAST)
+
+        self.actionAcercaDe.triggered.connect(self.acercade)
+        self.actionAyuda.triggered.connect(self.ayuda)
+
         self.ts_global = TS.Entorno(None)
         self.ast =  AST.AST([]) 
         self.listado_gramatical = []
@@ -340,7 +352,27 @@ class Ui_MainWindow(object):
         self.ruta_archivo = None
         self.editor.setText("")
         self.consola.clear()
-        
+
+    def acercade(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+
+        msg.setText("AUGUS IDE\nPrimer Proyecto Compiladores 2 Vacaciones Junio\nElaborado por: Haroldo Arias\nCarnet: 201020247")
+        msg.setInformativeText("Python 3.8.3\nPLY\nPyQT\nScintilla")
+        msg.setWindowTitle("Acerca de")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec_()
+
+    def ayuda(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+
+        msg.setText("AUGUS IDE")
+        msg.setInformativeText("Puedes encontrar el manual de este proyecto en:\nhttps://tinyurl.com/yabg9why")
+        msg.setWindowTitle("Ayuda")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec_()
+
     def setTexto(self,texto):
         self.consola.setText(self.consola.text() + texto)
 
@@ -662,6 +694,9 @@ class Ui_MainWindow(object):
         self.actionErrores.setText(_translate("MainWindow", "Errores"))
         self.actionAST.setText(_translate("MainWindow", "AST"))
         self.actionGramatical.setText(_translate("MainWindow", "Gramatical"))
+
+        self.actionAyuda.setText(_translate("MainWindow", "Ayuda"))
+        self.actionAcercaDe.setText(_translate("MainWindow", "Acerca de"))
 
 interfaz = None
 
