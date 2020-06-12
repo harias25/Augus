@@ -307,6 +307,8 @@ def p_instruccion_imprimir(t) :
     'imprimir_instr     : IMPRIMIR PARIZQ tipo_var PARDER PTCOMA'
     op = Operacion()
     op.Indentficador(t[3],t.slice[1].lineno,find_column(t.slice[2]))
+    op.linea = t.slice[1].lineno
+    op.columna = find_column(t.slice[1])
     t[0] =Imprimir(op,t.slice[1].lineno,find_column(t.slice[1]))
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('imprimir_instr ->IMPRIMIR PARIZQ tipo_var  PARDER PTCOMA','imprimir_instr.instr = Print(tipo_var.val);',lista)
@@ -324,6 +326,8 @@ def p_instruccion_imprimir_cadena(t) :
                           | IMPRIMIR PARIZQ CADENA2 PARDER PTCOMA'''
     op = Operacion()
     op.Primitivo(Primitivo(t[3],t.slice[1].lineno,0))
+    op.linea = t.slice[1].lineno
+    op.columna = find_column(t.slice[1])
     t[0] = Imprimir(op,t.slice[1].lineno,find_column(t.slice[1]))
     lista = func(1,None).copy()
     gramatical = G.ValorAscendente('imprimir_instr ->IMPRIMIR PARIZQ CADENA  PARDER PTCOMA','imprimir_instr.instr = Print(CADENA);',lista)
@@ -625,9 +629,13 @@ def p_expresion_primitiva(t):
         func(2,gramatical)
     elif(t.slice[1].type == 'TEMP') or (t.slice[1].type == 'PARAM') or (t.slice[1].type == 'RET') or (t.slice[1].type == 'PILA') or (t.slice[1].type == 'RA') or (t.slice[1].type == 'PUNTERO'):
         op.Indentficador(t[1],t.slice[1].lineno,find_column(t.slice[1]))
+        op.linea = t.slice[1].lineno
+        op.columna = find_column(t.slice[1])
         gramatical = G.ValorAscendente('primitiva -> tipo_var','primitiva.val = tipo_var.val;',None)
         func(2,gramatical)
     elif(t.slice[1].type == 'acceso_lista'):
+        op.linea = t.lexer.lineno
+        op.columna = 1
         op.AccesoLista(t[1],t.lexer.lineno,1)
         lista = func(1,None).copy()
         gramatical = G.ValorAscendente('primitiva ->  acceso_lista','primitiva.val = acceso_lista.val;',lista)

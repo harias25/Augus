@@ -43,6 +43,11 @@ class Etiqueta(Instruccion) :
 
                 if(isDebug):
                     contador = 1
+                    ventana.tableWidget.setRowCount(0)
+                    ventana.tableWidget.setRowCount(100)
+                    ventana.tableWidget.setItem(0,0, QTableWidgetItem("No."))
+                    ventana.tableWidget.setItem(0,1, QTableWidgetItem("Simbolo"))
+                    ventana.tableWidget.setItem(0, 2 , QTableWidgetItem("Valor"))
                     for key in ent.tabla:
                         QApplication.processEvents()
                         s = ent.tabla[key]

@@ -598,6 +598,11 @@ class Ui_MainWindow(object):
                         break
                     
                     contador = 1
+                    self.tableWidget.setRowCount(0)
+                    self.tableWidget.setRowCount(100)
+                    self.tableWidget.setItem(0,0, QTableWidgetItem("No."))
+                    self.tableWidget.setItem(0,1, QTableWidgetItem("Simbolo"))
+                    self.tableWidget.setItem(0, 2 , QTableWidgetItem("Valor"))
                     for key in self.ts_global.tabla:
                         s = self.ts_global.tabla[key]
                         self.tableWidget.setItem(contador,0, QTableWidgetItem(str(contador)))
